@@ -113,7 +113,7 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	}
 
 	public static void main(String[] args) {
-		
+
 	}
 
 }

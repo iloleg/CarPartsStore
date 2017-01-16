@@ -12,13 +12,13 @@ import java.sql.SQLException;
  */
 public class JSON {
 	private String result;
-	
+
 	public JSON(final ResultSet resultSet) {
 		JSONArray jsonArray = new JSONArray();
 		try {
 			ResultSetMetaData metaData = resultSet.getMetaData();
 			while (resultSet.next()) {
-				int total_rows = metaData .getColumnCount();
+				int total_rows = metaData.getColumnCount();
 				JSONObject obj = new JSONObject();
 				for (int i = 0; i < total_rows; i++) {
 					obj.put(metaData.getColumnLabel(i + 1).toLowerCase(), resultSet.getObject(i + 1));
@@ -26,7 +26,7 @@ public class JSON {
 				jsonArray.put(obj);
 			}
 		} catch (JSONException | SQLException e) {
-			
+
 		} finally {
 			this.result = jsonArray.toString();
 		}
