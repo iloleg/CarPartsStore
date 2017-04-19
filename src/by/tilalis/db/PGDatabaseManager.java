@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import by.tilalis.utils.JSON;
 import by.tilalis.utils.SHA256;
 
 public class PGDatabaseManager implements DataManager, UserManager {
@@ -57,6 +59,17 @@ public class PGDatabaseManager implements DataManager, UserManager {
 		return false;
 	}
 
+	@Override
+	public String getUsersTable() {
+		try (ResultSet rs = statement.executeQuery(
+				"SELECT users.id, username, name AS role FROM public.users INNER JOIN public.\"userRoles\" ON role = \"userRoles\".id;")) {
+			return new JSON(rs).toString();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private String singleFieldQuery(final String fieldName, final String tableName, final String whereClause) {
 		final String query = String.format("SELECT \"%s\" FROM \"%s\" WHERE %s", fieldName, tableName, whereClause);
 		try (ResultSet rs = statement.executeQuery(query)) {
@@ -83,8 +96,23 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	}
 
 	@Override
+	public void deleteUserById(String id) throws SQLException {
+		if (statement.executeUpdate(String.format(
+				"DELETE FROM users WHERE id = '%s' AND role = (SELECT id FROM \"userRoles\" WHERE name = 'User')",
+				id)) == 0) {
+			throw new SQLException();
+		}
+	}
+
+	@Override
 	public String getPage(int linesPerPage, int numberOfPage) {
-		// TODO Auto-generated method stub
+		try (ResultSet rs = statement.executeQuery(String.format(
+				"SELECT id, factory_id, brand, model, price FROM public.parts ORDER BY id LIMIT %d OFFSET %d",
+				linesPerPage, numberOfPage * linesPerPage))) {
+			return new JSON(rs).toString();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -110,10 +138,6 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	public String findRecords(String fieldName, String query) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public static void main(String[] args) {
-
 	}
 
 }

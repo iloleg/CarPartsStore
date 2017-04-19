@@ -14,4 +14,6 @@ public interface UserManager {
 	void addUser(String username, String password, String role) throws SQLException;
 
 	void deleteUser(String username) throws SQLException;
+	
+	void deleteUserById(String id) throws SQLException;
 }

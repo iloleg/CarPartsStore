@@ -10,4 +10,6 @@ public interface DataManager {
 	String findRecord(String fieldName, String query);
 
 	String findRecords(String fieldName, String query);
+	
+	String getUsersTable();
 }

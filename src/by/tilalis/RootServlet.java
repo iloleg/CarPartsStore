@@ -24,12 +24,21 @@ public class RootServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		final String username = (String) session.getAttribute("username");
+		final String path = request.getServletPath();
 
 		if (username == null) {
-			getServletContext().getRequestDispatcher("/WEB-INF/singin.jsp").forward(request, response);
+			if (path.equals("/registration")) {
+				getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
+			} else {
+				getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);	
+			}
 		} else {
-			response.getWriter().append("LOGINED! Hello, " + username + ". Served at: ")
-					.append(request.getContextPath());
+			System.out.println("/WEB-INF/main.jsp?content=" + request.getServletPath());
+			
+			getServletContext()
+			.getRequestDispatcher("/WEB-INF/main.jsp?content=" + request.getServletPath())
+			.forward(request, response);
+
 		}
 
 	}
