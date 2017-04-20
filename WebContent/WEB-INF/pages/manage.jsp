@@ -41,7 +41,7 @@
         	$(document).ready(function () {
         		var $chosen;
  
-        		$.post('getUsers', function (responce) {
+        		$.post('get_users', function (responce) {
         			console.log(responce);
         			var data = JSON.parse(responce);
         			var table = "<tbody>"
@@ -71,7 +71,7 @@
             		$("#btn-delete").click(function () {
             			var id = $chosen.attr("object-id");
             			console.log(id);
-            			if (prompt("Are you sure?\n(Type \"yes\")").toLowerCase() == "yes") {
+            			if (confirm("Are you sure?")) {
             				$.post('delete_user', {"id" : id }, function (responce) {
             					console.log(responce);
             					if (JSON.parse(responce).status == "success") {

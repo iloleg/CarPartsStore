@@ -8,4 +8,10 @@
     <servlet-name>default</servlet-name>
     <url-pattern>/static/*</url-pattern>
   </servlet-mapping>
+  <jsp-config>
+  <taglib>
+   <taglib-uri>CPS.TLD</taglib-uri>
+  <taglib-location>cps.tags.tld</taglib-location>
+ </taglib>
+ </jsp-config>
 </web-app>

@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.sun.rowset.CachedRowSetImpl;
+
 import by.tilalis.utils.JSON;
 import by.tilalis.utils.SHA256;
 
@@ -71,7 +73,8 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	}
 
 	private String singleFieldQuery(final String fieldName, final String tableName, final String whereClause) {
-		final String query = String.format("SELECT \"%s\" FROM \"%s\" WHERE %s", fieldName, tableName, whereClause);
+		final String query = String.format("SELECT %s FROM \"%s\" WHERE %s", fieldName, tableName, whereClause);
+		System.out.println(query);
 		try (ResultSet rs = statement.executeQuery(query)) {
 			if (rs.next()) {
 				return rs.getString(1);
@@ -107,13 +110,21 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	@Override
 	public String getPage(int linesPerPage, int numberOfPage) {
 		try (ResultSet rs = statement.executeQuery(String.format(
-				"SELECT id, factory_id, brand, model, price FROM public.parts ORDER BY id LIMIT %d OFFSET %d",
+				"SELECT id, factory_id, brand, model, price FROM parts ORDER BY id LIMIT %d OFFSET %d",
 				linesPerPage, numberOfPage * linesPerPage))) {
-			return new JSON(rs).toString();
+			CachedRowSetImpl crs = new CachedRowSetImpl();
+			crs.populate(rs);
+			return new JSON(crs).toString();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@Override
+	public int getRowsCount() {
+		System.out.println(singleFieldQuery("COUNT(*)", "parts", "TRUE"));
+		return Integer.valueOf(singleFieldQuery("COUNT(*)", "parts", "TRUE"));
 	}
 
 	@Override
@@ -123,8 +134,23 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	}
 
 	@Override
-	public boolean addRecord(String[] values) {
-		// TODO Auto-generated method stub
+	public boolean addRecord(String[] fields, String[] values) throws SQLException {
+		StringBuilder sb = new StringBuilder("INSERT INTO parts (");
+		for (String filed : fields) {
+			sb.append(filed + ",");
+		}
+		
+		sb.setLength(Math.max(sb.length() - 1, 0));
+		sb.append(") VALUES (");
+		
+		for (String value : values) {
+			sb.append("'" + value + "',");
+		}
+		
+		sb.setLength(Math.max(sb.length() - 1, 0));
+		sb.append(")");
+		
+		statement.executeUpdate(sb.toString());
 		return false;
 	}
 
@@ -138,6 +164,12 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	public String findRecords(String fieldName, String query) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean deleteRecord(int recordId) throws SQLException {
+		statement.executeUpdate(String.format("DELETE FROM parts WHERE id = %d", recordId));
+		return false;
 	}
 
 }

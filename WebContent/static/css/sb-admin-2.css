@@ -440,3 +440,9 @@ table.dataTable thead .sorting:after {
     border-left-width: 0;
   }
 }
+.pagination {
+margin: 0px !important;
+}
+option:empty {
+  display:none;
+}

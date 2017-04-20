@@ -1,36 +1,28 @@
 package by.tilalis.tags;
 
-import java.io.IOException;
+public class LoginAlert extends Info {
+	private static final long serialVersionUID = 1L;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
-
-public class LoginAlert extends SimpleTagSupport {
-	private String type;
-	
-	public void setType(final String type) {
-		this.type = type;
+	@Override
+	public String message(final String type) {
+		String message = "";
+		switch (type) {
+		case "username":
+			message = "There's no such user.";
+			break;
+		case "password":
+			message = "Wrong password.";
+			break;
+		default:
+			message = "Bad login.";
+			break;
+		}
+		return message;
 	}
 	
 	@Override
-	public void doTag() throws JspException, IOException {
-		if (type != null) {
-			final String message;
-
-			switch (type) {
-				case "username":
-					message = "There's no such user.";
-					break;
-				case "password":
-					message = "Wrong password.";
-					break;
-				default:
-					message = "Bad login.";
-					break;
-			}
-			
-			getJspContext().getOut().write("<div class=\"alert alert-danger\" role=\"alert\">" +  message + "</div>");
-		}
+	public String output(final String message) {
+		return String.format("<div class=\"alert alert-danger\" role=\"alert\">%s</div>", message); 
 	}
 
 }

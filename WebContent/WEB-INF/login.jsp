@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="info" uri="CPS.TLD" %>
 <!DOCTYPE html>
 <html lang="en">
-<%@ include file="pages/static/head.html" %>
-
+<head>
+<%@ include file="pages/static/head-content.html" %>
+</head>
 <body>
 
     <div class="container">
@@ -14,47 +16,9 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                    <%
-						if (session.getAttribute("badLogin") != null) {
-							final String message;
-
-							switch (session.getAttribute("badLogin").toString()) {
-								case "username":
-									message = "There's no such user.";
-									break;
-								case "password":
-									message = "Wrong password.";
-									break;
-								default:
-									message = "Bad login.";
-									break;
-							}
-					%>
-						<div class="alert alert-danger" role="alert"><%= message %></div>
-					<%
-						}
-					%>
-					<%
-						if (session.getAttribute("registration") != null) {
-							final String message;
-
-							switch (session.getAttribute("registration").toString()) {
-								case "success":
-									message = "Successfully registered!";
-									break;
-								case "fail":
-									message = "Unsuccessfull registration";
-									break;
-								default:
-									message = "Something strange happened during registration process";
-									break;
-							}
-							session.removeAttribute("registration");
-					%>
-						<div class="alert alert-info" role="alert"><%= message %></div>
-					<%
-						}
-					%>
+                    	<%-- custom tags --%>
+						<info:login-alert attribute="badLogin"/>
+						<info:registration-info attribute="registration"/>
                         <form role="form" action="<%= request.getContextPath() + "/login" %>">
                             <fieldset>
                                 <div class="form-group">
@@ -74,7 +38,5 @@
     </div>
 
 <%@ include file="pages/static/foot.html" %>
-
 </body>
-
 </html>

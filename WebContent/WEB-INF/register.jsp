@@ -2,8 +2,9 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-<%@ include file="pages/static/head.html" %>
-
+<head>
+<%@ include file="pages/static/head-content.html" %>
+</head>
 <body>
 
     <div class="container">

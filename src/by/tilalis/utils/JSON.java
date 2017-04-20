@@ -26,7 +26,7 @@ public class JSON {
 				jsonArray.put(obj);
 			}
 		} catch (JSONException | SQLException e) {
-
+			e.printStackTrace();
 		} finally {
 			this.result = jsonArray.toString();
 		}
