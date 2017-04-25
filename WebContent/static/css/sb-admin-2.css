@@ -446,3 +446,6 @@ margin: 0px !important;
 option:empty {
   display:none;
 }
+#chosen-record {
+	background-color: #eee;
+}

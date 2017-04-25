@@ -1,7 +1,7 @@
 <div id="page-wrapper" style="min-height: 99px;">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Forms</h1>
+                    <h1 class="page-header">Add record</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -72,7 +72,7 @@
         			} else {
         				alert("Some error occured. Check types.");
         			}
-        		})
+        		});
         	});
         });
         </script>

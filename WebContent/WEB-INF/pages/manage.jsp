@@ -15,15 +15,6 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table id="manage-data" class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Username</th>
-                                            <th>Role</th>
-                                        </tr>
-                                    </thead>
-                                </table>
                             </div>
                             <button id="btn-delete" class="btn btn-danger col-lg-offset-10 col-lg-2">Delete Chosen Record</button>
                             <!-- /.table-responsive -->
@@ -39,50 +30,33 @@
         <!-- /#page-wrapper -->
         <script>
         	$(document).ready(function () {
-        		var $chosen;
- 
-        		$.post('get_users', function (responce) {
-        			console.log(responce);
-        			var data = JSON.parse(responce);
-        			var table = "<tbody>"
+        		function get_users() {
+        			$.post('get_users', function (responce) {
+            			console.log(responce);
+            			var data = JSON.parse(responce);
+            		    $(".table-responsive").html('').append(
+            		    	CPS.$Table(data, ["Username", "Role"], ["username", "role"], ["object-id"], ["id"])
+            		    );
+        			});
+        		}
+        		
         			
-        			for (var i = 0; i < data.length; ++i) {
-        				var object = data[i];
-        				table += "<tr class=\"record\" object-id=\"" + object.id + "\"" + ">" + 
-        						 "<td>" + (i + 1) + "</td>" + 
-        						 "<td>" + object.username + "</td>" + 
-        						 "<td>" + object.role + "</td>" + 
-        						 "</tr>";
-        			}
-        			
-        			table += "</tbody>";
-        			$("#manage-data").append(table);
-        			
-            		$(".record" ).click(function () {
-            			$(".record").css("background-color", "");
-            			$(this).css("background-color", "lightblue");
-            			$chosen = $(this);
-            		});
-            		
-            		$("thead").click(function () {
-            			$(".record").css("background-color", "");
-            		});
-            		
-            		$("#btn-delete").click(function () {
-            			var id = $chosen.attr("object-id");
-            			console.log(id);
-            			if (confirm("Are you sure?")) {
-            				$.post('delete_user', {"id" : id }, function (responce) {
-            					console.log(responce);
-            					if (JSON.parse(responce).status == "success") {
-            						alert("Successfully deleted!");
-            						location.reload();
-            					} else {
-            						alert("Cannot delete this record.");
-            					};
-            				});
-            			}
-            		});
-        		})
+            	$("#btn-delete").click(function () {
+            		var id = $("#chosen-record").attr("object-id");
+            		console.log(id);
+           			if (confirm("Are you sure?")) {
+           				$.post('delete_user', {"id" : id }, function (responce) {
+           					console.log(responce);
+           					if (JSON.parse(responce).status == "success") {
+           						alert("Successfully deleted!");
+           						get_users();
+           					} else {
+           						alert("Cannot delete this record.");
+           					};
+           				});
+           			}
+           		});
+            	
+            	get_users();
         	});
         </script>

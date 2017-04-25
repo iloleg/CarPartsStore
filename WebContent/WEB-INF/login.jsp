@@ -7,7 +7,6 @@
 <%@ include file="pages/static/head-content.html" %>
 </head>
 <body>
-
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
@@ -19,7 +18,7 @@
                     	<%-- custom tags --%>
 						<info:login-alert attribute="badLogin"/>
 						<info:registration-info attribute="registration"/>
-                        <form role="form" action="<%= request.getContextPath() + "/login" %>">
+                        <form role="form" action="${pageContext.request.contextPath}/login">
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Username" name="username" type="text" autofocus>
@@ -28,7 +27,7 @@
                                     <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
                                 <button type="submit" class="btn btn-lg btn-info btn-block">Login</button>
-                                <a href="<%= request.getContextPath() + "/registration" %>" class="btn btn-lg btn-success btn-block">Register</a>
+                                <a href="${pageContext.request.contextPath}/registration" class="btn btn-lg btn-success btn-block">Register</a>
                             </fieldset>
                         </form>
                     </div>

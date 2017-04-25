@@ -23,17 +23,6 @@
 						</div>
 					</div>
 					<div class="table-responsive">
-						<table id="manage-data" class="table table-bordered table-hover">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Factory Id</th>
-									<th>Car Brand</th>
-									<th>Car Model</th>
-									<th>Price</th>
-								</tr>
-							</thead>
-						</table>
 					</div>
 					<!-- /.table-responsive -->
 
@@ -46,8 +35,8 @@
 							</div>
 						</cps:check-rights>
 						<div class="col-lg-10">
-							<nav aria-label="Page navigation">
-								<ul class="pagination">
+							<nav aria-label="Page navigation" id="pagination-outer">
+								<ul id="pagination" class="pagination">
 									<li><a href="#">1</a></li>
 								</ul>
 							</nav>
@@ -66,112 +55,79 @@
 <!-- /#page-wrapper -->
 <script>
 $(document).ready(function () {
-	var countAll = 0;
 	var count = 0;
-	var pageCount = 1;
+	var countOnPage = 0;
 	
-	function get_page(lines, page, callback) {
-		$.post('get_page', {"lines": lines, "page": page}, function (responce) {
+	function get_page(lines, page) {
+		$.post('get_page', {"lines" : lines, "page" : page}, function (responce) {
 			var data = JSON.parse(responce);
-			var table = "<tbody>"
-			
-			for (var i = 0; i < data.length; ++i) {
-				var object = data[i];
-				table += "<tr class=\"record\" object-id=\"" + object.id + "\"" + ">"
-				+ "<td>" + (i + page*lines + 1) + "</td>"
-				+ "<td>" + object.factory_id + "</td>"
-				+ "<td>" + object.brand + "</td>"
-				+ "<td>" + object.model + "</td>"
-				+ "<td>" + object.price + "</td>" 
-				+ "</tr>";
-			}
-			
-			table += "</tbody>";
-			
-			if (callback !== undefined) {
-				callback(table);
-				
-				$(".record" ).click(function () {
-					$(".record").css("background-color", "");
-					$(this).css("background-color", "lightblue");
-					$chosen = $(this);
-				});
-				
-				$("thead").click(function () {
-					$(".record").css("background-color", "");
-				});
-			}
+			var table = CPS.$Table(data, 
+					["Factory ID", "Brand", "Model", "Price"],
+					["factory_id", "brand", "model", "price"],
+					["object-id"],
+					["id"],
+					page*lines);
+			$('.table-responsive').html('').append(table);
 		});
+	}
+	
+	function pagination(count) {
+		var ul = $("<ul></ul>");
+		for (var i = 0; i < count; ++i) {
+			ul.addClass("pagination").append(
+				$("<li></li>").append(
+					$("<a></a>").attr('href', '#').append(i + 1)
+				)
+			);
+		}
+		ul.find("a").click(function () {
+		    var page = parseInt($(this).html()) - 1;
+		    console.log(page);
+		    get_page(countOnPage, page);
+		    return false;
+		});
+		$("#pagination-outer").html("").append(ul);
+	}
+	
+	function rpp(count) {
+		$("#rpp").html('');
+		for (var i = count; i > 0; i -= 5) {
+			$("#rpp").append($("<option></option>").attr("value", i).append(i));
+		}
 	}
 
 	$.post('get_items_count', function (responce) {
-		countAll = count = parseInt(responce);
-		console.log(count);
-		$("#rpp").html('');
-		for (var i = countAll; i > 0; i -= 5) {
-			$("#rpp").append("<option value=\"" + i + "\">" + i + "<option>");
-		}
-	})
+		countOnPage = count = parseInt(responce);
+		pagination(1);
+		rpp(count);
+		get_page(count, 0);
+	});
 	
 	$("#rpp").click(function () {
-		count = $(this).val();
+		countOnPage = $(this).val();
+		pageCount = count / countOnPage;
+		pagination(pageCount);
+		get_page(countOnPage, 0);
+	});
 	
-		pageCount = countAll / count;
-		
-		var paginationHTML = '';
-		for (var i = 0; i < pageCount; ++i) {
-			paginationHTML += "<li><a href=\"\">" + (i + 1)  + "</a></li>";
+	$("#btn-delete").click(function () {
+		var id = $("#chosen-record").attr('object-id');
+		console.log(id);
+		if (confirm("Are you sure?")) {
+			$.post('delete_record', {"id" : id}, function (responce) {
+				var data = JSON.parse(responce);
+				if (data.status === "success") {
+					alert("Successfully deleted!");
+					count -= 1;
+					rpp(count);
+					pagination(1)
+					get_page(count, 0);
+				} else {
+					alert("Cannot delete this record.");
+				}
+			});	
 		}
-		$('.pagination').html(paginationHTML);
-		
-		/* pagination */
-		$(".pagination > li > a").click(function () {
-			$(".pagination > li > a").removeClass("active");
-			$(this).addClass("active");
-			
-			console.log(count);
-			var page = parseInt($(this).html()) - 1;
-			
-			console.log(count, page);
-			get_page(count, page, function (table) {
-				$("#manage-data").html(table);
-			});
-			return false;
-		});
-		
-	
-		get_page($(this).val(), 0, function (table) {
-			$("#manage-data").html(table);
-		})
 	});
 	
-	var $chosen;
-
-	get_page(100, 0, function (table) {
-		$("#manage-data").append(table);
-		
-		$("#btn-delete").click(function () {
-			var id = $chosen.attr("object-id");
-			console.log(id);
-			if (confirm("Are you sure?")) {
-				$.post('delete_record', {"id" : id }, function (responce) {
-					console.log(responce);
-					if (JSON.parse(responce).status == "success") {
-						alert("Successfully deleted!");
-						countAll -= 1;
-						
-						$("#rpp").html('');
-						for (var i = countAll; i > 0; i -= 5) {
-							$("#rpp").append("<option value=\"" + i + "\">" + i + "<option>");
-						}
-						
-						$('.pagination > li > a.active').click();
-					} else {
-						alert("Cannot delete this record.");
-					};
-				});
-			}
-		});
-	});
 });
 </script>
