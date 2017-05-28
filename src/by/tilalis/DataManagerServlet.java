@@ -13,15 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import by.tilalis.db.DataManager;
 import by.tilalis.db.PGDatabaseManager;
 
-@WebServlet({ "/get_users", "/get_page", "/get_items_count", "/add_record", "/delete_record" })
+@WebServlet({ "/get_users", "/get_page", "/get_items_count", "/add_record", "/delete_record", "/update_record" })
 public class DataManagerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static enum Paths {
-		GET_USERS, GET_PAGE, GET_ITEMS_COUNT, DELETE_RECORD, ADD_RECORD;
+		GET_USERS, GET_PAGE, GET_ITEMS_COUNT, DELETE_RECORD, ADD_RECORD, UPDATE_RECORD;
 
 		public static Paths fromString(final String path) {
-			System.out.println("CALLED WITH PATH:" + path + " AND " + path.substring(1).toUpperCase());
+			System.out.println("CALLED WITH PATH: " + path + " AND " + path.substring(1).toUpperCase());
 			return Paths.valueOf(path.substring(1).toUpperCase());
 		}
 	}
@@ -69,9 +69,29 @@ public class DataManagerServlet extends HttpServlet {
 			case DELETE_RECORD:
 				deleteRecord(response.getWriter(), request);
 				break;
+			case UPDATE_RECORD:
+				updateRecord(response.getWriter(), request);
 			default:
 				break;
 			}
+		}
+	}
+	
+	private void updateRecord(final PrintWriter writer, HttpServletRequest request) {
+		final String success = "{\"status\": \"success\"}";
+		final String fail    = "{\"status\": \"fail\"}";
+		
+		final String[] fields = request.getParameterValues("fields[]");
+		final String[] values = request.getParameterValues("values[]");
+		try {
+			if (dataManager.editRecord(Integer.valueOf(request.getParameter("id")), fields, values)) {
+				writer.write(success);
+			} else {
+				writer.write(fail);
+			}
+			
+		} catch (NumberFormatException | SQLException e) {
+			writer.write(fail);
 		}
 	}
 
@@ -100,16 +120,17 @@ public class DataManagerServlet extends HttpServlet {
 	private void getPage(final PrintWriter writer, final HttpServletRequest request) {
 		int linesPerPage = 10;
 		int numberOfPage = 0;
+		String searchField = request.getParameter("search_field");
+		String searchQuery = request.getParameter("search_query");
 
 		try {
 			linesPerPage = Integer.valueOf(request.getParameter("lines"));
 			numberOfPage = Integer.valueOf(request.getParameter("page"));
 		} catch (NumberFormatException nfe) {
 		}
-
-		System.out.printf("l:%d n:%d%n", linesPerPage, numberOfPage);
-
-		writer.write(dataManager.getPage(linesPerPage, numberOfPage));
+		System.out.printf("%d %d %s %s", linesPerPage, numberOfPage, searchField, searchQuery);
+		
+		writer.write(dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery));
 	}
 
 	private void getCount(final PrintWriter writer) {

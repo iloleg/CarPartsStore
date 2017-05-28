@@ -109,18 +109,32 @@ public class PGDatabaseManager implements DataManager, UserManager {
 
 	@Override
 	public String getPage(int linesPerPage, int numberOfPage) {
-		try (ResultSet rs = statement.executeQuery(String.format(
-				"SELECT id, factory_id, brand, model, price FROM parts ORDER BY id LIMIT %d OFFSET %d",
-				linesPerPage, numberOfPage * linesPerPage))) {
+		return getPage(linesPerPage, numberOfPage, null, null);
+	}
+
+	@Override
+	public String getPage(int linesPerPage, int numberOfPage, String searchField, String searchQuery) {
+		final String query;
+		if (searchField == null || searchQuery == null || "".equals(searchField) || "".equals(searchQuery)) {
+			query = String.format("SELECT id, factory_id, brand, model, price " + "FROM parts " + "ORDER BY id "
+					+ "LIMIT %d OFFSET %d", linesPerPage, numberOfPage * linesPerPage);
+		} else {
+			query = String.format(
+					"SELECT id, factory_id, brand, model, price FROM parts WHERE CAST(\"%s\" AS TEXT) ILIKE '%s%%' ORDER BY id LIMIT %d OFFSET %d",
+					searchField, searchQuery, linesPerPage, numberOfPage * linesPerPage);
+		}
+
+		try (ResultSet rs = statement.executeQuery(query)) {
 			CachedRowSetImpl crs = new CachedRowSetImpl();
 			crs.populate(rs);
 			return new JSON(crs).toString();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		return null;
 	}
-	
+
 	@Override
 	public int getRowsCount() {
 		System.out.println(singleFieldQuery("COUNT(*)", "parts", "TRUE"));
@@ -128,9 +142,21 @@ public class PGDatabaseManager implements DataManager, UserManager {
 	}
 
 	@Override
-	public boolean editRecord(int recordId, String[] fieldNames, String[] values) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean editRecord(int recordId, String[] fieldNames, String[] values) throws SQLException {
+		if (fieldNames.length != values.length) {
+			return false;
+		}
+		StringBuilder query = new StringBuilder("UPDATE parts SET ");
+		
+		for (int i = 0; i < values.length - 1; ++i) {
+			query.append(String.format("\"%s\" = '%s', ", fieldNames[i], values[i]));
+		}
+		query.append(String.format("\"%s\" = '%s'", fieldNames[values.length - 1], values[values.length - 1]));
+		query.append(String.format(" WHERE id = %d", recordId));
+		
+		System.out.println(query.toString());
+		statement.executeUpdate(query.toString());
+		return true;
 	}
 
 	@Override
@@ -139,31 +165,19 @@ public class PGDatabaseManager implements DataManager, UserManager {
 		for (String filed : fields) {
 			sb.append(filed + ",");
 		}
-		
+
 		sb.setLength(Math.max(sb.length() - 1, 0));
 		sb.append(") VALUES (");
-		
+
 		for (String value : values) {
 			sb.append("'" + value + "',");
 		}
-		
+
 		sb.setLength(Math.max(sb.length() - 1, 0));
 		sb.append(")");
-		
+
 		statement.executeUpdate(sb.toString());
 		return false;
-	}
-
-	@Override
-	public String findRecord(String fieldName, String query) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String findRecords(String fieldName, String query) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

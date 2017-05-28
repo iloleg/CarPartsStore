@@ -30,7 +30,7 @@
 			case "/search":
 			default:
 		%>
-		<%@ include file="pages/data.jsp"%>
+		<%@ include file="pages/search.jsp"%>
 		<%
 			break;
 			}

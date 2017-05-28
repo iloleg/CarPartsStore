@@ -1,5 +1,5 @@
 var CPS = {
-	$Table : function (data, tableHeader, visibleFields, attributes, attributeFields, pageIndexMultiplier) {
+	$Table : function (data, tableHeader, visibleFields, attributes, attributeFields, pageIndexMultiplier, update) {
 		if (pageIndexMultiplier === undefined) {
 			pageIndexMultiplier = 1;
 		}
@@ -23,16 +23,32 @@ var CPS = {
 			
 			tr.append($("<td></td>").append(i  + pageIndexMultiplier + 1));
 			for (var k = 0; k < visibleFields.length; ++k) {
-				tr.append($("<td></td>").append(object[visibleFields[k]]));
+				tr.append($("<td></td>").addClass(visibleFields[k]).append(object[visibleFields[k]]));
 			}
 			tbody.append(tr);
 		}
 		table.append(tbody);
 		
-		table.find(".record" ).click(function () {
+		var record = table.find(".record" )
+		
+		record.click(function () {
 			$(".record").attr('id', '');
 			$(this).attr('id', 'chosen-record');
 		});
+		
+		if (update !== undefined) {
+			record.dblclick(function () {
+				$(this).attr("contenteditable", "true");
+				$(this).attr('style', 'color: red');
+				$(this).focus();
+			});
+			
+			record.focusout(function () {
+				$(this).removeAttr("contenteditable");
+				$(this).removeAttr("style");
+				update($(this));
+			});
+		}
 		
 		table.find("thead").click(function () {
 			$(".record").attr('id', '');

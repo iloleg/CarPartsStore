@@ -58,6 +58,30 @@ $(document).ready(function () {
 	var count = 0;
 	var countOnPage = 0;
 	
+	function update($tr) {
+		function get(name) {
+			return $tr.find(name).html();
+		}
+		
+		var id         = parseInt($tr.attr('object-id'));
+		var factory_id = get('.factory_id');
+		var brand      = get('.brand');
+		var model      = get('.model');
+		var price      = get('.price');
+
+		$.post('update_record', {
+			"id" : id,
+			"fields[]" : ["factory_id", "brand", "model", "price"],
+			"values[]" : [ factory_id ,  brand ,  model ,  price ]
+		}, function (responce) {
+			var data = JSON.parse(responce);
+			console.log(data);
+			if (data.status !== "success") {
+				alert("Could not update record!");
+			}
+		});
+	}
+	
 	function get_page(lines, page) {
 		$.post('get_page', {"lines" : lines, "page" : page}, function (responce) {
 			var data = JSON.parse(responce);
@@ -66,7 +90,7 @@ $(document).ready(function () {
 					["factory_id", "brand", "model", "price"],
 					["object-id"],
 					["id"],
-					page*lines);
+					page*lines, update);
 			$('.table-responsive').html('').append(table);
 		});
 	}

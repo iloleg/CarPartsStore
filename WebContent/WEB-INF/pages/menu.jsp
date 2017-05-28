@@ -35,7 +35,7 @@
                             <a href="${path}/lookup"><i class="fa fa-dashboard fa-fw"></i> View</a>
                         </li>
                         <li>
-                            <a href=""><i class="fa fa-table fa-fw"></i> Search</a>
+                            <a href="${path}/search"><i class="fa fa-table fa-fw"></i> Search</a>
                         </li>
                         <cps:check-rights>
 							<li>
