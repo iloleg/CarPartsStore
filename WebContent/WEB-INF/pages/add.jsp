@@ -18,19 +18,19 @@
                                     <form id="add-form" role="form">
                                         <div class="form-group col-lg-3">
                                             <label>Factory Id</label>
-                                            <input class="form-control" name="factory_id" placeholder="Integer" required>
+                                            <input class="form-control" id="factory_id" placeholder="Integer" required>
                                         </div>
                                         <div class="form-group col-lg-3">
                                             <label>Car Brand</label>
-                                            <input class="form-control" name="brand" placeholder="Text" required>
+                                            <input class="form-control" id="brand" placeholder="Text" required>
                                         </div>
                                         <div class="form-group col-lg-3">
                                             <label>Car Model</label>
-                                            <input class="form-control" name="model" placeholder="Text" required>
+                                            <input class="form-control" id="model" placeholder="Text" required>
                                         </div>
                                         <div class="form-group col-lg-3">
                                             <label>Price</label>
-                                            <input class="form-control" name="price" placeholder="Float" required>
+                                            <input class="form-control" id="price" placeholder="Float" required>
                                         </div>
                                         <div class="col-lg-12">
 											<button type="submit" class="btn btn-default">Submit</button>
@@ -54,23 +54,32 @@
         $(document).ready(function () {
         	$("#add-form").submit(function (e) {
         		e.preventDefault();
-    			var data = { "fields": [], "values" : []};
-        		$(this).find(':input').each(function() {
-        			var $t = $(this);
-        			if ($t.attr("name") !== undefined) {
-        				console.log($t.attr("name") + " : " + $t.val());
-        				data.fields.push($t.attr("name"));
-        				data.values.push($t.val());
-        				console.log(data);
-        			}
-        		});
+        		var factory_id = parseInt($("#factory_id").val());
+        		if (isNaN(factory_id)) {
+        			alert("Factory Id must be of Integer type!");
+        			return;
+        		}
+        		
+        		var price = parseFloat($("#price").val());
+        		if (isNaN(price)) {
+        			alert("Price must be of Float type!");
+        			return;
+        		}
+        		
+        		var brand = $("#brand").val();
+        		var model = $("#model").val();
+        		
+    			var data = { 
+    				"fields[]": ["factory_id", "brand", "model", "price"], 
+    				"values[]": [ factory_id ,  brand ,  model ,  price ]
+    			}
         		
         		$.post('add_record', data, function (r) {
         			var result = JSON.parse(r);
         			if (result.status === "success") {
         				alert("Added!");
         			} else {
-        				alert("Some error occured. Check types.");
+        				alert("Some error occured!");
         			}
         		});
         	});

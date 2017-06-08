@@ -1,4 +1,4 @@
-package by.tilalis.db;
+package by.tilalis.db.interfaces;
 
 import java.sql.SQLException;
 
