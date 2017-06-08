@@ -9,6 +9,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import by.tilalis.db.DataRecord;
+
 @WebServlet("/update_record")
 public class UpdateRecordServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
@@ -22,17 +27,16 @@ public class UpdateRecordServlet extends DataManagerServlet {
 		final String success = "{\"status\": \"success\"}";
 		final String fail    = "{\"status\": \"fail\"}";
 		
-		final String[] fields = request.getParameterValues("fields[]");
-		final String[] values = request.getParameterValues("values[]");
+		/*final String[] fields = request.getParameterValues("fields[]");
+		final String[] values = request.getParameterValues("values[]");*/
+		final String updatedJson = request.getParameter("updated");
 		try {
-			if (dataManager.editRecord(Integer.valueOf(request.getParameter("id")), fields, values)) {
-				writer.write(success);
-			} else {
-				writer.write(fail);
-			}
-			
-		} catch (NumberFormatException | SQLException e) {
+			final DataRecord updated = mapper.readValue(updatedJson, DataRecord.class);
+			dataManager.editRecord(updated);
+			writer.write(success);
+		} catch (JsonParseException | JsonMappingException | SQLException e) {
 			writer.write(fail);
+			e.printStackTrace();
 		}
 	}
 }

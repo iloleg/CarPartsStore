@@ -2,11 +2,14 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import by.tilalis.db.UserRecord;
 
 @WebServlet("/get_users")
 public class UsersServlet extends DataManagerServlet {
@@ -18,6 +21,8 @@ public class UsersServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		writer.write(dataManager.getUsersTable());
+		final List<UserRecord> list = dataManager.getUsersTable();
+		final String usersTableJson = mapper.writeValueAsString(list);
+		writer.write(usersTableJson);
 	}
 }

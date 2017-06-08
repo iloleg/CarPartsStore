@@ -9,6 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import by.tilalis.db.UserRecord;
+
 @WebServlet("/delete_user")
 public class DeleteUserServlet extends SessionServlet {
 	private static final long serialVersionUID = 1L;
@@ -20,11 +22,13 @@ public class DeleteUserServlet extends SessionServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String id = request.getParameter("id");
 		final PrintWriter writer = response.getWriter();
+		final UserRecord deleted = new UserRecord(Integer.valueOf(id));
 		
 		try {
-			userManager.deleteUserById(id);
+			userManager.deleteUserById(deleted);
 			writer.write("{\"status\": \"success\"}");
 		} catch (SQLException e) {
+			e.printStackTrace();
 			writer.write("{\"status\": \"fail\"}");
 		}
 	}

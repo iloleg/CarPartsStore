@@ -54,8 +54,8 @@
         $(document).ready(function () {
         	$("#add-form").submit(function (e) {
         		e.preventDefault();
-        		var factory_id = parseInt($("#factory_id").val());
-        		if (isNaN(factory_id)) {
+        		var factoryId = parseInt($("#factory_id").val());
+        		if (isNaN(factoryId)) {
         			alert("Factory Id must be of Integer type!");
         			return;
         		}
@@ -69,9 +69,20 @@
         		var brand = $("#brand").val();
         		var model = $("#model").val();
         		
-    			var data = { 
+    			/*var data = { 
     				"fields[]": ["factory_id", "brand", "model", "price"], 
     				"values[]": [ factory_id ,  brand ,  model ,  price ]
+    			}*/
+    			
+    			var inserted = {
+    				"factoryId": factoryId,
+    				"brand": brand,
+    				"model": model,
+    				"price": price
+    			}
+    			
+    			var data = {
+    				"inserted": JSON.stringify(inserted)
     			}
         		
         		$.post('add_record', data, function (r) {

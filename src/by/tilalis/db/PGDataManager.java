@@ -1,10 +1,14 @@
 package by.tilalis.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.NamingException;
 
 import com.sun.rowset.CachedRowSetImpl;
 
@@ -18,10 +22,9 @@ public class PGDataManager implements DataManager {
 
 	private PGDataManager() {
 		try {
-			Class.forName("org.postgresql.Driver");
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CPS", "postgres", "290197");
+			connection = DatabaseConnectionManager.getInstance().getConnection();
 			statement = connection.createStatement();
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (SQLException | NamingException e) {
 			e.printStackTrace();
 		}
 	}
@@ -34,13 +37,19 @@ public class PGDataManager implements DataManager {
 	}
 
 	@Override
-	public String getUsersTable() {
+	public List<UserRecord> getUsersTable() {
+		final ArrayList<UserRecord> users = new ArrayList<>();
+		
 		try (ResultSet rs = statement.executeQuery(
 				"SELECT users.id, username, name AS role FROM public.users INNER JOIN public.\"userRoles\" ON role = \"userRoles\".id;")) {
-			return new JSON(rs).toString();
+			while (rs.next()) {
+				users.add(new UserRecord(rs.getInt("id"), rs.getString("username"), rs.getString("role")));
+			}
+			return users;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		return null;
 	}
 
@@ -92,48 +101,30 @@ public class PGDataManager implements DataManager {
 	}
 
 	@Override
-	public boolean editRecord(int recordId, String[] fieldNames, String[] values) throws SQLException {
-		if (fieldNames.length != values.length) {
-			return false;
-		}
-		StringBuilder query = new StringBuilder("UPDATE parts SET ");
-		
-		for (int i = 0; i < values.length - 1; ++i) {
-			query.append(String.format("\"%s\" = '%s', ", fieldNames[i], values[i]));
-		}
-		query.append(String.format("\"%s\" = '%s'", fieldNames[values.length - 1], values[values.length - 1]));
-		query.append(String.format(" WHERE id = %d", recordId));
-		
-		System.out.println(query.toString());
-		statement.executeUpdate(query.toString());
-		return true;
+	public void editRecord(final DataRecord updated) throws SQLException {
+		final String updateQuery = MessageFormat.format(
+				"UPDATE parts SET factory_id = {0}, brand = ''{1}'', model = ''{2}'', price = ''{3}'' WHERE id = {4}", 
+				updated.getId(), updated.getBrand(), updated.getModel(), updated.getPrice(), updated.getId()
+		);
+		statement.executeUpdate(updateQuery);
 	}
 
 	@Override
-	public boolean addRecord(String[] fields, String[] values) throws SQLException {
-		StringBuilder sb = new StringBuilder("INSERT INTO parts (");
-		for (String filed : fields) {
-			sb.append(filed + ",");
-		}
-
-		sb.setLength(Math.max(sb.length() - 1, 0));
-		sb.append(") VALUES (");
-
-		for (String value : values) {
-			sb.append("'" + value + "',");
-		}
-
-		sb.setLength(Math.max(sb.length() - 1, 0));
-		sb.append(")");
-
-		statement.executeUpdate(sb.toString());
-		return false;
+	public void addRecord(final DataRecord inserted) throws SQLException {
+		final String insertQuery = MessageFormat.format(
+				"INSERT INTO parts (factory_id, brand, model, price) VALUES ({0}, {1}, {2}, {3})", 
+				inserted.getFactoryId(), inserted.getBrand(), inserted.getModel(), inserted.getPrice()
+		);
+		statement.executeUpdate(insertQuery);
 	}
 
 	@Override
-	public boolean deleteRecord(int recordId) throws SQLException {
-		statement.executeUpdate(String.format("DELETE FROM parts WHERE id = %d", recordId));
-		return false;
+	public void deleteRecord(DataRecord deleted) throws SQLException {
+		final String deleteQuery = MessageFormat.format(
+				"DELETE FROM PARTS WHERE id = {}", 
+				deleted.getId()
+		);
+		statement.executeUpdate(deleteQuery);
 	}
 
 }

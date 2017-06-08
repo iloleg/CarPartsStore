@@ -1,6 +1,10 @@
 package by.tilalis.db.interfaces;
 
 import java.sql.SQLException;
+import java.util.List;
+
+import by.tilalis.db.DataRecord;
+import by.tilalis.db.UserRecord;
 
 public interface DataManager {
 	String getPage(int linesPerPage, int numberOfPage);
@@ -9,11 +13,11 @@ public interface DataManager {
 	
 	int getRowsCount();
 
-	boolean editRecord(int recordId, String[] fieldNames, String[] values) throws SQLException;
+	void editRecord(DataRecord updated) throws SQLException;
 
-	boolean addRecord(String[] fields, String[] values) throws SQLException;
+	void addRecord(DataRecord inserted) throws SQLException;
 	
-	boolean deleteRecord(int recordId) throws SQLException;
+	void deleteRecord(DataRecord deleted) throws SQLException;
 	
-	String getUsersTable();
+	List<UserRecord> getUsersTable();
 }

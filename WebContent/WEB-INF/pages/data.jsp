@@ -63,16 +63,16 @@ $(document).ready(function () {
 			return $tr.find(name).html();
 		}
 		
-		var id         = parseInt($tr.attr('object-id'));
-		var factory_id = get('.factory_id');
-		var brand      = get('.brand');
-		var model      = get('.model');
-		var price      = get('.price');
+		var updated = {
+			id         : parseInt($tr.attr('object-id')),
+			factoryId : get('.factory_id'),
+			brand      : get('.brand'),
+			model      : get('.model'),
+			price      : get('.price')	
+		}
 
 		$.post('update_record', {
-			"id" : id,
-			"fields[]" : ["factory_id", "brand", "model", "price"],
-			"values[]" : [ factory_id ,  brand ,  model ,  price ]
+			"updated": JSON.stringify(updated)
 		}, function (responce) {
 			var data = JSON.parse(responce);
 			console.log(data);
@@ -135,10 +135,12 @@ $(document).ready(function () {
 	});
 	
 	$("#btn-delete").click(function () {
-		var id = $("#chosen-record").attr('object-id');
-		console.log(id);
+		var deleted = {
+			"id": $("#chosen-record").attr('object-id')
+		}
+		
 		if (confirm("Are you sure?")) {
-			$.post('delete_record', {"id" : id}, function (responce) {
+			$.post('delete_record', {"deleted" : JSON.stringify(deleted)}, function (responce) {
 				var data = JSON.parse(responce);
 				if (data.status === "success") {
 					alert("Successfully deleted!");

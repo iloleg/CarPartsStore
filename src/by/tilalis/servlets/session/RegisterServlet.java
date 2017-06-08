@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import by.tilalis.db.UserRecord;
+
 @WebServlet("/register")
 public class RegisterServlet extends SessionServlet {
 	private static final long serialVersionUID = 1L;
@@ -18,15 +20,17 @@ public class RegisterServlet extends SessionServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		final HttpSession session = request.getSession();
 		final String username = request.getParameter("username");
 		final String password = request.getParameter("password");
-		final HttpSession session = request.getSession();
+		final UserRecord inserted = new UserRecord(username, password);
 		
 		try {
-			userManager.addUser(username, password, "User");
+			userManager.addUser(inserted);
 			session.setAttribute("registration", "success");
 		} catch (SQLException e) {
 			session.setAttribute("registration", "fail");
+			e.printStackTrace();
 		}
 		
 		response.sendRedirect(request.getContextPath() + "/");

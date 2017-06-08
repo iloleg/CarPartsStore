@@ -9,6 +9,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import by.tilalis.db.DataRecord;
+
 @WebServlet("/add_record")
 public class AddRecordServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
@@ -19,13 +24,13 @@ public class AddRecordServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		final String[] fields = request.getParameterValues("fields[]");
-		final String[] values = request.getParameterValues("values[]");
+		final String insertedJson = request.getParameter("inserted");
 		
 		try {
-			dataManager.addRecord(fields, values);
+			final DataRecord inserted = mapper.readValue(insertedJson, DataRecord.class);
+			dataManager.addRecord(inserted);
 			writer.write("{\"status\": \"success\"}");
-		} catch (SQLException e) {
+		} catch (JsonParseException | JsonMappingException | SQLException e) {
 			writer.write("{\"status\": \"fail\"}");
 			e.printStackTrace();
 		}
