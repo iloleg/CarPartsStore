@@ -1,7 +1,7 @@
 var CPS = {
 	$Table : function (data, tableHeader, visibleFields, attributes, attributeFields, pageIndexMultiplier, update) {
 		if (pageIndexMultiplier === undefined) {
-			pageIndexMultiplier = 1;
+			pageIndexMultiplier = 0;
 		}
 	
 		var table = $("<table></table>").addClass("table table-bordered table-hover");
