@@ -1,5 +1,7 @@
 package by.tilalis.db;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.sun.rowset.CachedRowSetImpl;
 
@@ -16,32 +28,40 @@ import by.tilalis.db.interfaces.DataManager;
 import by.tilalis.utils.JSON;
 
 public class PGDataManager implements DataManager {
-	private static PGDataManager instance;
 	private static Connection connection;
 	private static Statement statement;
+	private static Document document;
+	private static XPath xpath;
 
-	private PGDataManager() {
+	public PGDataManager(final InputStream file) {
 		try {
+			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			XPathFactory pathFactory = XPathFactory.newInstance();
+			
+	        xpath = pathFactory.newXPath();
+            document = documentBuilder.parse(file);
+            
 			connection = DatabaseConnectionManager.getInstance().getConnection();
 			statement = connection.createStatement();
-		} catch (SQLException | NamingException e) {
+		} catch (SQLException | NamingException | IOException | ParserConfigurationException | SAXException e) {
 			e.printStackTrace();
 		}
 	}
-
-	public static PGDataManager getInstance() {
-		if (instance != null) {
-			return instance;
+	
+	private String getQuery(final String path) {
+		final String base = "//Queries/DataManager/";
+		try {
+			return (String) xpath.compile(base + path).evaluate(document, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
 		}
-		return new PGDataManager();
+		return null;
 	}
 
 	@Override
 	public List<UserRecord> getUsersTable() {
 		final ArrayList<UserRecord> users = new ArrayList<>();
-		
-		try (ResultSet rs = statement.executeQuery(
-				"SELECT users.id, username, name AS role FROM public.users INNER JOIN public.\"userRoles\" ON role = \"userRoles\".id;")) {
+		try (ResultSet rs = statement.executeQuery(getQuery("UsersTable"))) {
 			while (rs.next()) {
 				users.add(new UserRecord(rs.getInt("id"), rs.getString("username"), rs.getString("role")));
 			}
@@ -53,19 +73,6 @@ public class PGDataManager implements DataManager {
 		return null;
 	}
 
-	private String singleFieldQuery(final String fieldName, final String tableName, final String whereClause) {
-		final String query = String.format("SELECT %s FROM \"%s\" WHERE %s", fieldName, tableName, whereClause);
-		System.out.println(query);
-		try (ResultSet rs = statement.executeQuery(query)) {
-			if (rs.next()) {
-				return rs.getString(1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		throw new IllegalArgumentException();
-	}
-
 	@Override
 	public String getPage(int linesPerPage, int numberOfPage) {
 		return getPage(linesPerPage, numberOfPage, null, null);
@@ -75,12 +82,16 @@ public class PGDataManager implements DataManager {
 	public String getPage(int linesPerPage, int numberOfPage, String searchField, String searchQuery) {
 		final String query;
 		if (searchField == null || searchQuery == null || "".equals(searchField) || "".equals(searchQuery)) {
-			query = String.format("SELECT id, factory_id, brand, model, price " + "FROM parts " + "ORDER BY id "
-					+ "LIMIT %d OFFSET %d", linesPerPage, numberOfPage * linesPerPage);
+			query = MessageFormat.format(
+					getQuery("GetPage"), 
+					linesPerPage,
+					numberOfPage * linesPerPage
+			);
 		} else {
-			query = String.format(
-					"SELECT id, factory_id, brand, model, price FROM parts WHERE CAST(\"%s\" AS TEXT) ILIKE '%s%%' ORDER BY id LIMIT %d OFFSET %d",
-					searchField, searchQuery, linesPerPage, numberOfPage * linesPerPage);
+			query = MessageFormat.format(
+					getQuery("GetPageSearch"), 
+					searchField, searchQuery, linesPerPage, numberOfPage * linesPerPage
+			);
 		}
 
 		try (ResultSet rs = statement.executeQuery(query)) {
@@ -96,24 +107,41 @@ public class PGDataManager implements DataManager {
 
 	@Override
 	public int getRowsCount() {
-		System.out.println(singleFieldQuery("COUNT(*)", "parts", "TRUE"));
-		return Integer.valueOf(singleFieldQuery("COUNT(*)", "parts", "TRUE"));
+		final String query = getQuery("ItemsCount");
+		System.out.println(query);
+		try (ResultSet rs = statement.executeQuery(query)){
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return -1;
 	}
 
 	@Override
 	public void editRecord(final DataRecord updated) throws SQLException {
 		final String updateQuery = MessageFormat.format(
-				"UPDATE parts SET factory_id = {0}, brand = ''{1}'', model = ''{2}'', price = ''{3}'' WHERE id = {4}", 
-				updated.getId(), updated.getBrand(), updated.getModel(), updated.getPrice(), updated.getId()
+				getQuery("Update"), 
+				Integer.toString(updated.getFactoryId()), 
+				updated.getBrand(), 
+				updated.getModel(), 
+				Double.toString(updated.getPrice()), 
+				Integer.toString(updated.getId())
 		);
+		System.out.println(updateQuery);
 		statement.executeUpdate(updateQuery);
 	}
 
 	@Override
 	public void addRecord(final DataRecord inserted) throws SQLException {
 		final String insertQuery = MessageFormat.format(
-				"INSERT INTO parts (factory_id, brand, model, price) VALUES ({0}, {1}, {2}, {3})", 
-				inserted.getFactoryId(), inserted.getBrand(), inserted.getModel(), inserted.getPrice()
+				getQuery("Insert"), 
+				Integer.toString(inserted.getFactoryId()), 
+				inserted.getBrand(), 
+				inserted.getModel(), 
+				Double.toString(inserted.getPrice())
 		);
 		statement.executeUpdate(insertQuery);
 	}
@@ -121,7 +149,7 @@ public class PGDataManager implements DataManager {
 	@Override
 	public void deleteRecord(DataRecord deleted) throws SQLException {
 		final String deleteQuery = MessageFormat.format(
-				"DELETE FROM PARTS WHERE id = {}", 
+				getQuery("DeleteById"), 
 				deleted.getId()
 		);
 		statement.executeUpdate(deleteQuery);

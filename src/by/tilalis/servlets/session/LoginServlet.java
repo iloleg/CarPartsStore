@@ -14,32 +14,33 @@ import by.tilalis.utils.SHA256;
 public class LoginServlet extends SessionServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doPost(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		final String username = request.getParameter("username");
 		final String password = request.getParameter("password");
 		final HttpSession session = request.getSession();
-		
+
 		if (username == null || password == null) {
 			throw new IllegalArgumentException(username + " " + password);
 		}
 
 		session.removeAttribute("badLogin");
 		final UserRecord user = userManager.getUser(username);
-		try {
-			if (new SHA256(password).toString().equals(user.getHash())) {
-				session.setAttribute("username", username);
-				session.setAttribute("role", user.getRole());
-			} else {
-				session.setAttribute("badLogin", "password");
-			}
-		} catch (IllegalArgumentException iae) {
-			session.setAttribute("badLogin", "username");
-		}
 		
+		if (user == null) {
+			session.setAttribute("badLogin", "username");
+		} else if (new SHA256(password).toString().equals(user.getHash())) {
+			session.setAttribute("username", username);
+			session.setAttribute("role", user.getRole());
+		} else {
+			session.setAttribute("badLogin", "password");
+		}
+
 		response.sendRedirect(request.getContextPath() + "/");
 	}
 

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="info" uri="CPS.TLD" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,9 +15,41 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                    	<%-- custom tags --%>
-						<info:login-alert attribute="badLogin"/>
-						<info:registration-info attribute="registration"/>
+                    
+						<c:if test="${not empty badLogin}">
+							<div class="alert alert-danger" role="alert">
+							<c:choose>
+								<c:when test="${badLogin == 'username'}">
+									There's no such user.
+								</c:when>
+								<c:when test="${badLogin == 'password'}">
+									Wrong password.
+								</c:when>
+								<c:otherwise>
+									Bad login.
+								</c:otherwise>
+							</c:choose>
+							</div>
+							<c:set var="badLogin" scope="session" value=""/>
+						</c:if>
+						
+						<c:if test="${not empty registration}">
+							<div class="alert alert-info" role="alert">
+							<c:choose>
+								<c:when test="${registration == 'success'}">
+									Successfully registered!
+								</c:when>
+								<c:when test="${registration == 'fail'}">
+									Unsuccessful registration.
+								</c:when>
+								<c:otherwise>
+									Something strange happened during registration process.
+								</c:otherwise>
+							</c:choose>
+							</div>
+							<c:set var="registration" scope="session" value=""/>
+						</c:if>
+						
                         <form role="form" action="${pageContext.request.contextPath}/login">
                             <fieldset>
                                 <div class="form-group">

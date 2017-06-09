@@ -36,7 +36,7 @@ var CPS = {
 			$(this).attr('id', 'chosen-record');
 		});
 		
-		if (update !== undefined) {
+		if (typeof update == "function") {
 			record.dblclick(function () {
 				$(this).attr("contenteditable", "true");
 				$(this).attr('style', 'color: red');
