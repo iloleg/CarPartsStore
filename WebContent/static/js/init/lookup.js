@@ -8,11 +8,11 @@ $(document).ready(function () {
 			var data = JSON.parse(responce);
 			var table = CPS.$Table(data, 
 					["Factory ID", "Brand", "Model", "Price"],
-					["factoryId", "brand", "model", "price"],
-					["object-id"],
-					["id"],
+					["factoryId", "brand.name", "model", "price"],
+					["object-id", "brand-id"],
+					["id", "brand.id"],
 					page*lines, update);
-			$('.table-responsive').html('').append(table);
+			$('.cps-table').html('').append(table);
 		});
 	}
 	

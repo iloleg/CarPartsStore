@@ -1,5 +1,13 @@
 var CPS = {
 	$Table : function (data, tableHeader, visibleFields, attributes, attributeFields, pageIndexMultiplier, update) {
+		var get = function (obj, keys) {
+		    var nodes = keys.split('.');
+		    for (var i = 0; i < nodes.length; i++) {
+		        obj = obj[nodes[i]];
+		    }
+		    return obj;
+		};
+		
 		if (pageIndexMultiplier === undefined) {
 			pageIndexMultiplier = 0;
 		}
@@ -18,12 +26,15 @@ var CPS = {
 			var object = data[i];
 			var tr = $("<tr></tr>").addClass('record');
 			for (var j = 0; j < attributes.length; ++j) {
-				tr.attr(attributes[j], object[attributeFields[j]]);
+				tr.attr(attributes[j], get(object, attributeFields[j]));
 			}
 			
 			tr.append($("<td></td>").append(i  + pageIndexMultiplier + 1));
 			for (var k = 0; k < visibleFields.length; ++k) {
-				tr.append($("<td></td>").addClass(visibleFields[k]).append(object[visibleFields[k]]));
+				var span = $("<span></span>")
+						  .addClass(visibleFields[k])
+						  .append(get(object, visibleFields[k]))
+				tr.append($("<td></td>").append(span));
 			}
 			tbody.append(tr);
 		}
@@ -36,18 +47,46 @@ var CPS = {
 			$(this).attr('id', 'chosen-record');
 		});
 		
+		var source = [];
+		$.post('get_brands', function (data) {
+			var result = JSON.parse(data);
+			for (var i = 0; i < result.length; ++i) {
+				source.push({
+					'value': result[i].id,
+					'text': result[i].name
+				})
+			}
+		});
+		
 		if (typeof update == "function") {
-			record.dblclick(function () {
-				$(this).attr("contenteditable", "true");
-				$(this).attr('style', 'color: red');
-				$(this).focus();
-			});
-			
-			record.focusout(function () {
-				$(this).removeAttr("contenteditable");
-				$(this).removeAttr("style");
-				update($(this));
-			});
+			//record.dblclick(function () {
+				//var self = record;
+				
+				$(record).find('span:not([class^=brand])').editable({
+				    type: 'text',
+				    title: 'Enter new value',
+				    success: function (resp, value) {
+				    	var self = $(this).closest('tr');
+				    	$(this).html(value);
+				    	update($(self))
+				    }
+				});
+				
+				$(record).find('span[class^=brand]').editable({
+					type: 'select',
+					source: function() {
+						 return source;
+					},
+					display: function (value, source) {
+						if (source !== undefined) {
+							var self = $(this).closest('tr')
+							$(this).html(source[value - 1].text);
+							$(self).attr('brand-id', value);
+							update($(self));
+						}
+					}
+				});
+			//});
 		}
 		
 		table.find("thead").click(function () {

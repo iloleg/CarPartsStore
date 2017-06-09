@@ -11,6 +11,8 @@ public interface DataManager {
 	
 	List<DataRecord> getPage(int linesPerPage, int numberOfPage, String searchField, String searchQuery);
 	
+	List<DataRecord.Brand> getBrands();
+	
 	int getRowsCount();
 
 	void editRecord(DataRecord updated) throws SQLException;
@@ -18,6 +20,8 @@ public interface DataManager {
 	void addRecord(DataRecord inserted) throws SQLException;
 	
 	void deleteRecord(DataRecord deleted) throws SQLException;
+	
+	void addBrand(DataRecord.Brand inserted) throws SQLException;
 	
 	List<UserRecord> getUsersTable();
 }

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebFilter({"/add_record", "/delete_record", "/update_record", "/get_users", "/manage", "/add"})
+@WebFilter({"/add_record", "/delete_record", "/add_brand", "/update_record", "/get_users", "/manage", "/add"})
 public class AdminRoleFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest req = (HttpServletRequest) request;

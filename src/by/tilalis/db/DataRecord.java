@@ -5,9 +5,43 @@ import by.tilalis.db.interfaces.Record;
 public class DataRecord implements Record {
 	private int id;
 	private int factoryId;
-	private String brand;
+	private Brand brand;
 	private String model;
 	private double price;
+	
+	public static class Brand {
+		private int id;
+		private String name;
+		
+		public Brand(final int id, final String name) {
+			this.id = id;
+			this.name = name;
+		}
+		
+		public Brand(final String name) {
+			this(-1, name);
+		}
+		
+		public Brand() {
+			this.id = -1;
+		}
+		
+		public int getId() {
+			return id;
+		}
+		
+		public void setId(final int id) {
+			this.id = id;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(final String name) {
+			this.name = name;
+		}
+	}
 	
 	public DataRecord() {
 		this.id = -1;
@@ -17,7 +51,7 @@ public class DataRecord implements Record {
 		this.id = id;
 	}
 	
-	public DataRecord(final int id, final int factory_id, final String brand, final String model, final double price) {
+	public DataRecord(final int id, final int factory_id, final Brand brand, final String model, final double price) {
 		this.id = id;
 		this.factoryId = factory_id;
 		this.brand = brand;
@@ -25,7 +59,7 @@ public class DataRecord implements Record {
 		this.price = price;
 	}
 	
-	public DataRecord(final int factory_id, final String brand, final String model, final double price) {
+	public DataRecord(final int factory_id, final Brand brand, final String model, final double price) {
 		this(-1, factory_id, brand, model, price);
 	}
 
@@ -45,11 +79,11 @@ public class DataRecord implements Record {
 		this.factoryId = factory_id;
 	}
 
-	public String getBrand() {
+	public Brand getBrand() {
 		return brand;
 	}
 
-	public void setBrand(String brand) {
+	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
 

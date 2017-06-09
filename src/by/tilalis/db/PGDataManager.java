@@ -22,6 +22,7 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import by.tilalis.db.DataRecord.Brand;
 import by.tilalis.db.interfaces.DataManager;
 
 public class PGDataManager implements DataManager {
@@ -90,12 +91,20 @@ public class PGDataManager implements DataManager {
 					getQuery("GetPageSearch"), 
 					searchField, searchQuery, linesPerPage, numberOfPage * linesPerPage
 			);
+			System.out.println(query);
 		}
-
-		System.out.println(query);
+		
 		try (ResultSet rs = statement.executeQuery(query)) {
 			while (rs.next()) {
-				list.add(new DataRecord(rs.getInt("id"), rs.getInt("factory_id"), rs.getString("brand"), rs.getString("model"), rs.getDouble("price")));
+				list.add(
+					new DataRecord(
+						rs.getInt("id"), 
+						rs.getInt("factory_id"), 
+						new DataRecord.Brand(rs.getInt("brand_id"), rs.getString("brand_name")), 
+						rs.getString("model"), 
+						rs.getDouble("price")
+					)
+				);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -103,11 +112,26 @@ public class PGDataManager implements DataManager {
 
 		return list;
 	}
+	
+	@Override
+	public List<Brand> getBrands() {
+		final String query = getQuery("GetBrands");
+		final List<Brand> list = new ArrayList<>();
+		
+		try (ResultSet rs = statement.executeQuery(query)) {
+			while (rs.next()) {
+				list.add(new Brand(rs.getInt("id"), rs.getString("name")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
 
 	@Override
 	public int getRowsCount() {
 		final String query = getQuery("ItemsCount");
-		System.out.println(query);
 		try (ResultSet rs = statement.executeQuery(query)){
 			if (rs.next()) {
 				return rs.getInt(1);
@@ -124,12 +148,11 @@ public class PGDataManager implements DataManager {
 		final String updateQuery = MessageFormat.format(
 				getQuery("Update"), 
 				Integer.toString(updated.getFactoryId()), 
-				updated.getBrand(), 
+				updated.getBrand().getId(), 
 				updated.getModel(), 
 				Double.toString(updated.getPrice()), 
 				Integer.toString(updated.getId())
 		);
-		System.out.println(updateQuery);
 		statement.executeUpdate(updateQuery);
 	}
 
@@ -138,7 +161,7 @@ public class PGDataManager implements DataManager {
 		final String insertQuery = MessageFormat.format(
 				getQuery("Insert"), 
 				Integer.toString(inserted.getFactoryId()), 
-				inserted.getBrand(), 
+				inserted.getBrand().getId(), 
 				inserted.getModel(), 
 				Double.toString(inserted.getPrice())
 		);
@@ -152,6 +175,15 @@ public class PGDataManager implements DataManager {
 				deleted.getId()
 		);
 		statement.executeUpdate(deleteQuery);
+	}
+
+	@Override
+	public void addBrand(Brand inserted) throws SQLException {
+		final String insertQuery = MessageFormat.format(
+				getQuery("InsertBrand"),
+				inserted.getName()
+		);
+		statement.executeUpdate(insertQuery);
 	}
 
 }

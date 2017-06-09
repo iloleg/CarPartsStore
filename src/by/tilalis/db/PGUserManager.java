@@ -60,7 +60,6 @@ public class PGUserManager implements UserManager {
 				inserted.getUsername(), 
 				inserted.getHash(),
 				inserted.getRole());
-		System.out.println(insertQuery);
 		statement.executeUpdate(insertQuery);
 	}
 
@@ -72,8 +71,6 @@ public class PGUserManager implements UserManager {
 	@Override
 	public void deleteUserById(final UserRecord deleted) throws SQLException {
 		final int deletedCount = statement.executeUpdate(MessageFormat.format(getQuery("DeleteById"), Integer.toString(deleted.getId())));
-		System.out.println(getQuery("DeleteById"));
-		System.out.println(deletedCount);
 		if (deletedCount == 0) {
 			throw new SQLException();
 		}

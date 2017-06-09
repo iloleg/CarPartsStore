@@ -2,7 +2,7 @@
 <Queries>
 	<UserManager>
 		<Insert>
-			INSERT INTO users (username, hash, role) VALUES (''{0}'', ''{1}'', (SELECT id FROM "userRoles" WHERE name = ''{2}''))
+			INSERT INTO users (username, hash, role) VALUES (''{0}'', ''{1}'', (SELECT id FROM roles WHERE name = ''{2}''))
 		</Insert>
 		<DeleteByUsername>
 			DELETE FROM users 
@@ -10,17 +10,17 @@
 		</DeleteByUsername>
 		<DeleteById>
 			DELETE FROM users 
-			WHERE id = {0} AND role = (SELECT id FROM "userRoles" WHERE name = ''User'')
+			WHERE id = {0} AND role = (SELECT id FROM roles WHERE name = ''User'')
 		</DeleteById>
 		<GetUser>
 			SELECT users.id, username, hash, name AS role 
-			FROM users INNER JOIN "userRoles" ON role = "userRoles".id WHERE username = ''{0}''
+			FROM users INNER JOIN roles ON role = roles.id WHERE username = ''{0}''
 		</GetUser>
 	</UserManager>
 	
 	<DataManager>
 		<Insert>
-			INSERT INTO parts (factory_id, brand, model, price) VALUES ({0}, ''{1}'', ''{2}'', {3})
+			INSERT INTO parts (factory_id, brand, model, price) VALUES ({0}, {1}, ''{2}'', {3})
 		</Insert>
 		<Update>
 			UPDATE parts SET factory_id = {0}, brand = ''{1}'', model = ''{2}'', price = {3}
@@ -34,22 +34,29 @@
 		</ItemsCount>
 		<UsersTable>
 			SELECT users.id, username, name AS role 
-			FROM users INNER JOIN "userRoles" ON role = "userRoles".id
+			FROM users INNER JOIN roles ON role = roles.id
 		</UsersTable>
 		<GetPage>
-			SELECT id, factory_id, brand, model, price 
-			FROM parts 
+			SELECT parts.id, factory_id, brands.id AS brand_id, brands.name AS brand_name, model, price 
+			FROM parts INNER JOIN brands ON brand = brands.id 
 			ORDER BY id 
 			LIMIT {0} 
 			OFFSET {1}
 		</GetPage>
 		<GetPageSearch>
-			SELECT id, factory_id, brand, model, price 
-			FROM parts 
-			WHERE CAST("{0}" AS TEXT) ILIKE ''{1}%'' 
+			SELECT parts.id, factory_id, brands.id AS brand_id, brands.name AS brand_name, model, price 
+			FROM parts INNER JOIN brands ON brand = brands.id 
+			WHERE CAST({0} AS TEXT) ILIKE ''{1}%'' 
 			ORDER BY id 
 			LIMIT {2} 
 			OFFSET {3}
 		</GetPageSearch>
+		<GetBrands>
+			SELECT id, name
+			FROM brands
+		</GetBrands>
+		<InsertBrand>
+			INSERT INTO brands (name) VALUES (''{0}'')
+		</InsertBrand>
 	</DataManager>
 </Queries>

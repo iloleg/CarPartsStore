@@ -5,12 +5,13 @@ import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import by.tilalis.servlets.data.DataManagerServlet;
+
 @WebServlet("/")
-public class RootServlet extends HttpServlet {
+public class RootServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -22,6 +23,9 @@ public class RootServlet extends HttpServlet {
 			context.getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
 		} else if (path.equals("/signin")) {
 			context.getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+		} else if (path.equals("/add")) {
+			request.getSession().setAttribute("dataManager", dataManager);
+			context.getRequestDispatcher("/WEB-INF/main.jsp?content=/add").forward(request, response);
 		} else {
 			context.getRequestDispatcher("/WEB-INF/main.jsp?content=" + request.getServletPath())
 					.forward(request, response);

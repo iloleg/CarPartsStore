@@ -2,17 +2,20 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import by.tilalis.db.DataRecord;
 
-@WebServlet("/get_page")
-public class PageServlet extends DataManagerServlet {
+@WebServlet("/add_brand")
+public class AddBrandServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -21,18 +24,15 @@ public class PageServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		int linesPerPage = 10;
-		int numberOfPage = 0;
-		String searchField = request.getParameter("search_field");
-		String searchQuery = request.getParameter("search_query");
-
-		try {
-			linesPerPage = Integer.valueOf(request.getParameter("lines"));
-			numberOfPage = Integer.valueOf(request.getParameter("page"));
-		} catch (NumberFormatException nfe) {
-		}
+		final String insertedJson = request.getParameter("inserted");
 		
-		final List<DataRecord> dataRecords = dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery);
-		mapper.writeValue(writer, dataRecords);
+		try {
+			final DataRecord.Brand inserted = mapper.readValue(insertedJson, DataRecord.Brand.class);
+			dataManager.addBrand(inserted);
+			writer.write("{\"status\": \"success\"}");
+		} catch (JsonParseException | JsonMappingException | SQLException e) {
+			writer.write("{\"status\": \"fail\"}");
+			e.printStackTrace();
+		}
 	}
 }

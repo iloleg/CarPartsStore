@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import by.tilalis.db.DataRecord;
 
-@WebServlet("/get_page")
-public class PageServlet extends DataManagerServlet {
+@WebServlet("/get_brands")
+public class BrandsServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -21,18 +21,7 @@ public class PageServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		int linesPerPage = 10;
-		int numberOfPage = 0;
-		String searchField = request.getParameter("search_field");
-		String searchQuery = request.getParameter("search_query");
-
-		try {
-			linesPerPage = Integer.valueOf(request.getParameter("lines"));
-			numberOfPage = Integer.valueOf(request.getParameter("page"));
-		} catch (NumberFormatException nfe) {
-		}
-		
-		final List<DataRecord> dataRecords = dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery);
+		final List<DataRecord.Brand> dataRecords = dataManager.getBrands();
 		mapper.writeValue(writer, dataRecords);
 	}
 }
