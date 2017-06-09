@@ -13,7 +13,7 @@ $(document).ready(function () {
 			}
 			var table = CPS.$Table(data, 
 					["Factory ID", "Brand", "Model", "Price"],
-					["factory_id", "brand", "model", "price"],
+					["factoryId", "brand", "model", "price"],
 					["object-id"],
 					["id"],
 					page*lines, update);

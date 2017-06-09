@@ -21,8 +21,7 @@ public class UsersServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		final List<UserRecord> list = dataManager.getUsersTable();
-		final String usersTableJson = mapper.writeValueAsString(list);
-		writer.write(usersTableJson);
+		final List<UserRecord> usersTable = dataManager.getUsersTable();
+		mapper.writeValue(writer, usersTable);
 	}
 }

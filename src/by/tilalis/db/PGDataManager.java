@@ -22,10 +22,7 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.sun.rowset.CachedRowSetImpl;
-
 import by.tilalis.db.interfaces.DataManager;
-import by.tilalis.utils.JSON;
 
 public class PGDataManager implements DataManager {
 	private static Connection connection;
@@ -74,12 +71,13 @@ public class PGDataManager implements DataManager {
 	}
 
 	@Override
-	public String getPage(int linesPerPage, int numberOfPage) {
+	public List<DataRecord> getPage(int linesPerPage, int numberOfPage) {
 		return getPage(linesPerPage, numberOfPage, null, null);
 	}
 
 	@Override
-	public String getPage(int linesPerPage, int numberOfPage, String searchField, String searchQuery) {
+	public List<DataRecord> getPage(int linesPerPage, int numberOfPage, String searchField, String searchQuery) {
+		final List<DataRecord> list = new ArrayList<>();
 		final String query;
 		if (searchField == null || searchQuery == null || "".equals(searchField) || "".equals(searchQuery)) {
 			query = MessageFormat.format(
@@ -94,15 +92,16 @@ public class PGDataManager implements DataManager {
 			);
 		}
 
+		System.out.println(query);
 		try (ResultSet rs = statement.executeQuery(query)) {
-			CachedRowSetImpl crs = new CachedRowSetImpl();
-			crs.populate(rs);
-			return new JSON(crs).toString();
+			while (rs.next()) {
+				list.add(new DataRecord(rs.getInt("id"), rs.getInt("factory_id"), rs.getString("brand"), rs.getString("model"), rs.getDouble("price")));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return null;
+		return list;
 	}
 
 	@Override

@@ -2,11 +2,14 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import by.tilalis.db.DataRecord;
 
 @WebServlet("/get_page")
 public class PageServlet extends DataManagerServlet {
@@ -30,6 +33,7 @@ public class PageServlet extends DataManagerServlet {
 		}
 		System.out.printf("%d %d %s %s", linesPerPage, numberOfPage, searchField, searchQuery);
 		
-		writer.write(dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery));
+		final List<DataRecord> dataRecords = dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery);
+		mapper.writeValue(writer, dataRecords);
 	}
 }
