@@ -26,9 +26,9 @@ public class UserRoleFilter implements Filter {
 		final String path = req.getRequestURI();
 		
 		final String username = (String) session.getAttribute("username");
-		Stream<String> allowedPaths = Stream.of(new String[] {"/login", "/signin", "/register", "/registration"});
+		final Stream<String> allowedPaths = Stream.of("/login", "/signin", "/register", "/registration");
 		
-		if (username != null || allowedPaths.anyMatch(item -> item.equals(servletPath)) || path.contains("static")) {
+		if (username != null || allowedPaths.anyMatch(servletPath::equals) || path.contains("static")) {
 			chain.doFilter(request, response);
 		} else {
 			resp.sendRedirect(req.getContextPath() + "/signin");
