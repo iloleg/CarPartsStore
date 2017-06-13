@@ -3,9 +3,12 @@ package by.tilalis.db.interfaces;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.ejb.Local;
+
 import by.tilalis.db.DataRecord;
 import by.tilalis.db.UserRecord;
 
+@Local
 public interface DataManager {
 	List<DataRecord> getPage(int linesPerPage, int numberOfPage);
 	
