@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.tilalis.db.UserRecord;
+import by.tilalis.db.records.UserRecord;
 import by.tilalis.utils.SHA256;
 
 @WebServlet("/login")
@@ -35,8 +35,7 @@ public class LoginServlet extends SessionServlet {
 		if (user == null) {
 			session.setAttribute("badLogin", "username");
 		} else if (new SHA256(password).toString().equals(user.getHash())) {
-			session.setAttribute("username", username);
-			session.setAttribute("role", user.getRole());
+			session.setAttribute("user", user);
 		} else {
 			session.setAttribute("badLogin", "password");
 		}

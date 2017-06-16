@@ -11,12 +11,10 @@ $(document).ready(function () {
 			for (item in data) {
 				++count;
 			}
-			var table = CPS.$Table(data, 
-					["Factory ID", "Brand", "Model", "Price"],
-					["factoryId", "brand.name", "model", "price"],
-					["object-id", "brand-id"],
-					["id", "brand.id"],
-					page*lines, update);
+			var table = CPS.$Table(data, [ "Factory ID", "Brand", "Category", "Model",
+				"Price" ], [ "factoryId", "brand.name", "category.name", "model",
+				"price" ], [ "object-id", "brand-id", "category-id"], [ "id",
+				"brand.id", "category.id"], page * lines, update);
 			$('.cps-table').html('').append(table);
 		});
 	}
@@ -93,5 +91,52 @@ $(document).ready(function () {
 		var search_field = $("#search-field").val();
 		var search_query = $("#search-query").val();		
 		get_page(countOnPage, 0, search_field, search_query);
+	});
+});
+$(document).ready(function () {
+	$("#btn-order").click(function () {
+		var $chosen = $("#chosen-record");
+		var inserted = {
+			"data": {
+				"id": $chosen.attr('object-id'),
+				"factoryId": $chosen.find('.factoryId').html(),
+				"brand" : {
+					"id": $chosen.attr('brand-id'),
+					"name": $chosen.find('.brand-name').html()
+				},
+				"category": {
+					"id": $chosen.attr('category-id'),
+					"name": $chosen.find('.category-name').html()
+				},
+				"model": $chosen.find('.model').html(),
+				"price": $chosen.find('.price').html()
+			} 
+		};		
+		var email = prompt("Enter your email:");
+		if (inserted.data.id === undefined ) {
+			alert("Choose a record!");
+			return;
+		}
+		
+		if (email == "") {
+			return;
+		}
+		
+		if (email.indexOf("@") == -1) {
+			alert("Wrong email!");
+			return;
+		}
+		
+		$.post('add_order', {
+			"inserted": JSON.stringify(inserted),
+			"email": email
+		}, function (r) {
+			var result = JSON.parse(r);
+			if (result.status === "success") {
+				alert("Added! Check your e-mail `" + email + "` for further information!");
+			} else {
+				alert("Some error occured!");
+			}
+		});
 	});
 });

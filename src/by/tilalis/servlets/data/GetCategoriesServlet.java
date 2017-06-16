@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.DataRecord;
+import by.tilalis.db.records.CategoryRecord;
 
-@WebServlet("/get_brands")
-public class BrandsServlet extends DataManagerServlet {
+@WebServlet("/get_categories")
+public class GetCategoriesServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -21,7 +21,7 @@ public class BrandsServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		final List<DataRecord.Brand> dataRecords = dataManager.getBrands();
+		final List<CategoryRecord> dataRecords = dataManager.getCategories();
 		mapper.writeValue(writer, dataRecords);
 	}
 }

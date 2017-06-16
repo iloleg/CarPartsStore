@@ -23,12 +23,10 @@ public class RootServlet extends DataManagerServlet {
 			context.getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
 		} else if (path.equals("/signin")) {
 			context.getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
-		} else if (path.equals("/add")) {
-			request.getSession().setAttribute("dataManager", dataManager);
-			context.getRequestDispatcher("/WEB-INF/main.jsp?content=/add").forward(request, response);
 		} else {
-			context.getRequestDispatcher("/WEB-INF/main.jsp?content=" + request.getServletPath())
-					.forward(request, response);
+			request.setAttribute("dataManager", dataManager);
+			request.setAttribute("content", request.getServletPath());;
+			context.getRequestDispatcher("/WEB-INF/main.jsp?content=/add").forward(request, response);
 		}
 	}
 

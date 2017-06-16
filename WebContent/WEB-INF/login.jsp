@@ -50,7 +50,7 @@
 							<c:set var="registration" scope="session" value=""/>
 						</c:if>
 						
-                        <form role="form" action="${pageContext.request.contextPath}/login">
+                        <form role="form" action="${pageContext.request.contextPath}/login" method="POST">
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Username" name="username" type="text" autofocus>

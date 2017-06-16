@@ -12,15 +12,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebFilter({"/add_record", "/delete_record", "/add_brand", "/update_record", "/get_users", "/manage", "/add"})
+import by.tilalis.db.records.UserRecord;
+
+@WebFilter({
+	"/add_record", 
+	"/delete_record",
+	"/update_record", 
+	"/untrash_record",
+	"/add_brand", 
+	"/add_category", 
+	"/delete_order",
+	"/delete_user",
+	"/get_users", 
+	"/manage", 
+	"/add", 
+	"/trash", 
+	"/orders",
+	"/get_orders",
+	"/get_trash"
+})
 public class AdminRoleFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest req = (HttpServletRequest) request;
 		final HttpServletResponse resp = (HttpServletResponse) response;
 		final HttpSession session = req.getSession();
-		final String role = (String) session.getAttribute("role");
+		final UserRecord user = (UserRecord) session.getAttribute("user");
 		
-		if (role != null && role.equals("Administrator")) {
+		if (user != null && user.getRole().equals("Administrator")) {
 			chain.doFilter(request, response);
 		} else {
 			resp.sendRedirect(req.getContextPath() + "/signin");
@@ -29,13 +47,9 @@ public class AdminRoleFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
 	}
 }

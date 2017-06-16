@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import by.tilalis.db.interfaces.UserManager;
+import by.tilalis.db.records.UserRecord;
 
 @Stateless
 public class PGUserManager extends PGManager implements UserManager {

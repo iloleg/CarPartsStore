@@ -18,16 +18,40 @@
 		</GetUser>
 	</UserManager>
 	
+	<OrderManager>
+		<Insert>
+			INSERT INTO orders (user_id, part_id) VALUES({0}, {1})
+		</Insert>
+		<Delete>
+			DELETE FROM orders WHERE id = {0}
+		</Delete>
+		<GetOrders>
+			SELECT orders.id AS id, 
+				   users.id AS users_id, 
+				   users.username AS username, 
+				   parts.id AS parts_id, 
+				   parts.factory_id AS factory_id
+			FROM parts INNER JOIN 
+				 (orders INNER JOIN 
+				 users 
+				 ON orders.user_id = users.id)
+				 ON orders.part_id = parts.id
+			ORDER BY orders.id
+			LIMIT {0}
+			OFFSET {1}
+		</GetOrders>
+	</OrderManager>
+	
 	<DataManager>
 		<Insert>
-			INSERT INTO parts (factory_id, brand, model, price) VALUES ({0}, {1}, ''{2}'', {3})
+			INSERT INTO parts (factory_id, brand, category, model, price, trash) VALUES ({0}, {1}, {2}, ''{3}'', {4}, false)
 		</Insert>
 		<Update>
-			UPDATE parts SET factory_id = {0}, brand = ''{1}'', model = ''{2}'', price = {3}
-			WHERE id = {4}
+			UPDATE parts SET factory_id = {0}, brand = {1}, category = {2}, model = ''{3}'', price = {4}
+			WHERE id = {5}
 		</Update>
 		<DeleteById>
-			DELETE FROM PARTS WHERE id = {0}
+			DELETE FROM parts WHERE id = {0}
 		</DeleteById>
 		<ItemsCount>
 			SELECT COUNT(*) FROM parts
@@ -37,26 +61,78 @@
 			FROM users INNER JOIN roles ON role = roles.id
 		</UsersTable>
 		<GetPage>
-			SELECT parts.id, factory_id, brands.id AS brand_id, brands.name AS brand_name, model, price 
-			FROM parts INNER JOIN brands ON brand = brands.id 
+			SELECT parts.id, 
+				   factory_id, 
+				   brands.id AS brand_id, 
+				   brands.name AS brand_name, 
+				   categories.name AS category_name,
+				   categories.id AS category_id,
+				   model, 
+				   price 
+			FROM categories INNER JOIN
+				 (parts INNER JOIN 
+				 brands 
+				 ON brand = brands.id)
+				 ON parts.category = categories.id
+			WHERE parts.trash = false
 			ORDER BY id 
 			LIMIT {0} 
 			OFFSET {1}
 		</GetPage>
 		<GetPageSearch>
-			SELECT parts.id, factory_id, brands.id AS brand_id, brands.name AS brand_name, model, price 
-			FROM parts INNER JOIN brands ON brand = brands.id 
-			WHERE CAST({0} AS TEXT) ILIKE ''{1}%'' 
+			SELECT parts.id, 
+				   factory_id, 
+				   brands.id AS brand_id, 
+				   brands.name AS brand_name, 
+				   categories.name AS category_name,
+				   categories.id AS category_id,
+				   model, 
+				   price 
+			FROM categories INNER JOIN
+				 (parts INNER JOIN 
+				 brands 
+				 ON brand = brands.id)
+				 ON parts.category = categories.id
+			WHERE CAST({0} AS TEXT) ILIKE ''{1}%'' AND parts.trash = false
 			ORDER BY id 
 			LIMIT {2} 
 			OFFSET {3}
 		</GetPageSearch>
+		<GetTrash>
+			SELECT parts.id, 
+				   factory_id, 
+				   brands.id AS brand_id, 
+				   brands.name AS brand_name, 
+				   categories.name AS category_name,
+				   categories.id AS category_id,
+				   model, 
+				   price 
+			FROM categories INNER JOIN
+				 (parts INNER JOIN 
+				 brands 
+				 ON brand = brands.id)
+				 ON parts.category = categories.id
+			WHERE parts.trash = true
+			ORDER BY id 
+			LIMIT {0} 
+			OFFSET {1}
+		</GetTrash>
+		<Untrash>
+			UPDATE parts SET trash = false WHERE id = {0}
+		</Untrash>
 		<GetBrands>
 			SELECT id, name
 			FROM brands
 		</GetBrands>
+		<GetCategories>
+			SELECT id, name
+			FROM categories
+		</GetCategories>
 		<InsertBrand>
 			INSERT INTO brands (name) VALUES (''{0}'')
 		</InsertBrand>
+		<InsertCategory>
+			INSERT INTO categories (name) VALUES (''{0}'')
+		</InsertCategory>
 	</DataManager>
 </Queries>

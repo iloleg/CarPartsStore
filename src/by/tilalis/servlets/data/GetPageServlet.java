@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.DataRecord;
 
-@WebServlet("/get_users")
-public class UsersServlet extends DataManagerServlet {
+@WebServlet("/get_page")
+public class GetPageServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -21,7 +21,18 @@ public class UsersServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		final List<UserRecord> usersTable = dataManager.getUsersTable();
-		mapper.writeValue(writer, usersTable);
+		int linesPerPage = -1;
+		int numberOfPage = 0;
+		String searchField = request.getParameter("search_field");
+		String searchQuery = request.getParameter("search_query");
+
+		try {
+			linesPerPage = Integer.valueOf(request.getParameter("lines"));
+			numberOfPage = Integer.valueOf(request.getParameter("page"));
+		} catch (NumberFormatException nfe) {
+		}
+		
+		final List<DataRecord> dataRecords = dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery);
+		mapper.writeValue(writer, dataRecords);
 	}
 }

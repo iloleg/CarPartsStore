@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.DataRecord;
+import by.tilalis.db.records.DataRecord;
 
 @WebServlet("/delete_record")
 public class DeleteRecordServlet extends DataManagerServlet {

@@ -1,18 +1,18 @@
-package by.tilalis.servlets.session;
+package by.tilalis.servlets.data.orders;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.OrderRecord;
 
-@WebServlet("/delete_user")
-public class DeleteUserServlet extends SessionServlet {
+@WebServlet("/get_orders")
+public class GetOrdersServlet extends OrderManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -20,17 +20,16 @@ public class DeleteUserServlet extends SessionServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		final String id = request.getParameter("id");
 		final PrintWriter writer = response.getWriter();
-		final UserRecord deleted = new UserRecord(Integer.valueOf(id));
-		
+		int linesPerPage = -1;
+		int numberOfPage = 0;
 		try {
-			userManager.deleteUserById(deleted);
-			writer.write("{\"status\": \"success\"}");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			writer.write("{\"status\": \"fail\"}");
+			linesPerPage = Integer.valueOf(request.getParameter("lines"));
+			numberOfPage = Integer.valueOf(request.getParameter("page"));
+		} catch (NumberFormatException nfe) {
 		}
+		
+		final List<OrderRecord> dataRecords = orderManager.getOrders(linesPerPage, numberOfPage);
+		mapper.writeValue(writer, dataRecords);
 	}
-
 }

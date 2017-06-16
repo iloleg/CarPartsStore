@@ -12,14 +12,23 @@ $(document).ready(function() {
 			alert("Price must be of Float type!");
 			return;
 		}
-
-		var brand = $("#brand").val();
-		var model = $("#model").val();
+		
+		var model    = $("#model").val();
+		if (model == '') {
+			alert("Model cannot be empty!");
+			return;
+		}
+		
+		var brand    = $("#brand").val();
+		var category = $("#category").val();
 
 		var inserted = {
 			"factoryId" : factoryId,
 			"brand" : {
-				"id": $("#brand").val(),
+				"id": brand
+			},
+			"category": {
+				"id": category
 			},
 			"model" : model,
 			"price" : price
@@ -54,6 +63,29 @@ $(document).ready(function() {
 		}
 
 		$.post('add_brand', data, function(r) {
+			var result = JSON.parse(r);
+			console.log(result);
+			if (result.status === "success") {
+				alert("Added!");
+				location.reload();
+			} else {
+				alert("Some error occured!");
+			}
+		});
+	});
+	
+	$("#add-category-form").submit(function(e) {
+		e.preventDefault();
+		console.log("HEY");
+		var inserted = {
+			"name" : $("#category-name").val()
+		}
+
+		var data = {
+			"inserted" : JSON.stringify(inserted)
+		}
+
+		$.post('add_category', data, function(r) {
 			var result = JSON.parse(r);
 			console.log(result);
 			if (result.status === "success") {

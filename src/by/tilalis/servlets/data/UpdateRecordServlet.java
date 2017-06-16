@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import by.tilalis.db.DataRecord;
+import by.tilalis.db.records.DataRecord;
 
 @WebServlet("/update_record")
 public class UpdateRecordServlet extends DataManagerServlet {

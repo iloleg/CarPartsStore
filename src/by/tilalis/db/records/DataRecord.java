@@ -1,47 +1,14 @@
-package by.tilalis.db;
+package by.tilalis.db.records;
 
 import by.tilalis.db.interfaces.Record;
 
 public class DataRecord implements Record {
 	private int id;
 	private int factoryId;
-	private Brand brand;
+	private BrandRecord brand;
+	private CategoryRecord category;
 	private String model;
 	private double price;
-	
-	public static class Brand {
-		private int id;
-		private String name;
-		
-		public Brand(final int id, final String name) {
-			this.id = id;
-			this.name = name;
-		}
-		
-		public Brand(final String name) {
-			this(-1, name);
-		}
-		
-		public Brand() {
-			this.id = -1;
-		}
-		
-		public int getId() {
-			return id;
-		}
-		
-		public void setId(final int id) {
-			this.id = id;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public void setName(final String name) {
-			this.name = name;
-		}
-	}
 	
 	public DataRecord() {
 		this.id = -1;
@@ -51,16 +18,22 @@ public class DataRecord implements Record {
 		this.id = id;
 	}
 	
-	public DataRecord(final int id, final int factory_id, final Brand brand, final String model, final double price) {
+	public DataRecord(final int id, final int factory_id) {
+		this.id = id;
+		this.factoryId = factory_id;
+	}
+	
+	public DataRecord(final int id, final int factory_id, final BrandRecord brand, final CategoryRecord category, final String model, final double price) {
 		this.id = id;
 		this.factoryId = factory_id;
 		this.brand = brand;
+		this.category = category;
 		this.model = model;
 		this.price = price;
 	}
 	
-	public DataRecord(final int factory_id, final Brand brand, final String model, final double price) {
-		this(-1, factory_id, brand, model, price);
+	public DataRecord(final int factory_id, final BrandRecord brand, final CategoryRecord category, final String model, final double price) {
+		this(-1, factory_id, brand, category, model, price);
 	}
 
 	public int getId() {
@@ -79,11 +52,11 @@ public class DataRecord implements Record {
 		this.factoryId = factory_id;
 	}
 
-	public Brand getBrand() {
+	public BrandRecord getBrand() {
 		return brand;
 	}
 
-	public void setBrand(Brand brand) {
+	public void setBrand(BrandRecord brand) {
 		this.brand = brand;
 	}
 
@@ -101,6 +74,14 @@ public class DataRecord implements Record {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public CategoryRecord getCategory() {
+		return category;
+	}
+
+	public void setCategory(CategoryRecord category) {
+		this.category = category;
 	}
 
 }

@@ -12,15 +12,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import by.tilalis.db.records.UserRecord;
+
 @WebFilter({"/signin", "/registration"})
 public class AlreadyLoginedFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest req = (HttpServletRequest) request;
 		final HttpServletResponse resp = (HttpServletResponse) response;
 		final HttpSession session = req.getSession();
-		final String username = (String) session.getAttribute("username");
+		final UserRecord user = (UserRecord) session.getAttribute("user");
 		
-		if (username == null) {
+		if (user == null) {
 			chain.doFilter(request, response);
 		} else {
 			resp.sendRedirect(req.getContextPath() + "/");
@@ -29,13 +31,9 @@ public class AlreadyLoginedFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
 	}
 }

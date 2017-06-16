@@ -32,7 +32,7 @@ var CPS = {
 			tr.append($("<td></td>").append(i  + pageIndexMultiplier + 1));
 			for (var k = 0; k < visibleFields.length; ++k) {
 				var span = $("<span></span>")
-						  .addClass(visibleFields[k])
+						  .addClass(visibleFields[k].replace('.', '-'))
 						  .append(get(object, visibleFields[k]))
 				tr.append($("<td></td>").append(span));
 			}
@@ -47,11 +47,21 @@ var CPS = {
 			$(this).attr('id', 'chosen-record');
 		});
 		
-		var source = [];
+		var brands_source = [];
 		$.post('get_brands', function (data) {
 			var result = JSON.parse(data);
 			for (var i = 0; i < result.length; ++i) {
-				source.push({
+				brands_source.push({
+					'value': result[i].id,
+					'text': result[i].name
+				})
+			}
+		});
+		var categories_source = [];
+		$.post('get_categories', function (data) {
+			var result = JSON.parse(data);
+			for (var i = 0; i < result.length; ++i) {
+				categories_source.push({
 					'value': result[i].id,
 					'text': result[i].name
 				})
@@ -62,7 +72,7 @@ var CPS = {
 			//record.dblclick(function () {
 				//var self = record;
 				
-				$(record).find('span:not([class^=brand])').editable({
+				$(record).find('span[class!=brand-name][class!=category-name]').editable({
 				    type: 'text',
 				    title: 'Enter new value',
 				    success: function (resp, value) {
@@ -72,16 +82,31 @@ var CPS = {
 				    }
 				});
 				
-				$(record).find('span[class^=brand]').editable({
+				$(record).find('span[class=brand-name]').editable({
 					type: 'select',
 					source: function() {
-						 return source;
+						 return brands_source;
 					},
 					display: function (value, source) {
 						if (source !== undefined) {
 							var self = $(this).closest('tr')
 							$(this).html(source[value - 1].text);
 							$(self).attr('brand-id', value);
+							update($(self));
+						}
+					}
+				});
+				
+				$(record).find('span[class=category-name]').editable({
+					type: 'select',
+					source: function() {
+						 return categories_source;
+					},
+					display: function (value, source) {
+						if (source !== undefined) {
+							var self = $(this).closest('tr')
+							$(this).html(source[value - 1].text);
+							$(self).attr('category-id', value);
 							update($(self));
 						}
 					}

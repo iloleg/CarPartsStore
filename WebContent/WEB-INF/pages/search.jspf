@@ -27,6 +27,7 @@
 										class="form-control">
 										<option value="factory_id">Factory Id</option>
 										<option value="brands.name">Brand</option>
+										<option value="categories.name">Category</option>
 										<option value="model">Model</option>
 										<option value="price">Price</option>
 									</select>
@@ -70,13 +71,16 @@
 					<!-- /.table-responsive -->
 
 					<div class="row">
-						<c:if test="${role == 'Administrator'}">
+						<div class="col-lg-1">
+							<button id="btn-order" class="btn btn-primary">Order</button>
+						</div>
+						<c:if test="${user.role == 'Administrator'}">
 							<div class="col-lg-2">
 								<button id="btn-delete" class="btn btn-danger">Delete
 									Chosen Record</button>
 							</div>
 						</c:if>
-						<div class="col-lg-10">
+						<div class="col-lg-8">
 							<nav aria-label="Page navigation" id="pagination-outer">
 								<ul id="pagination" class="pagination">
 									<li><a href="#">1</a></li>

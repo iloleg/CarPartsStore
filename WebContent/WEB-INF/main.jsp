@@ -10,20 +10,26 @@
 	<%@ include file="pages/menu.jspf"%>
 	<div id="wrapper">
 		<c:choose>
-			<c:when test="${param.content == '/manage'}">
-				<%@ include file="pages/manage.jspf"%>
+			<c:when test="${content == '/manage'}">
+				<%@ include file="pages/manage.jspf" %>
 			</c:when>
-			<c:when test="${param.content == '/lookup'}">
-				<%@ include file="pages/lookup.jspf"%>
+			<c:when test="${content == '/lookup'}">
+				<%@ include file="pages/lookup.jspf" %>
 			</c:when>
-			<c:when test="${param.content == '/add'}">
-				<%@ include file="pages/add.jspf"%>
+			<c:when test="${content == '/trash'}">
+				<%@ include file="pages/lookup.jspf" %>
 			</c:when>
-			<c:when test="${param.content == '/search'}">
-				<%@ include file="pages/search.jspf"%>
+			<c:when test="${content == '/orders'}">
+				<%@ include file="pages/lookup.jspf" %>
+			</c:when>
+			<c:when test="${content == '/add'}">
+				<%@ include file="pages/add.jspf" %>
+			</c:when>
+			<c:when test="${content == '/search'}">
+				<%@ include file="pages/search.jspf" %>
 			</c:when>
 			<c:otherwise>
-				<%@ include file="pages/lookup.jspf"%>
+				<%@ include file="pages/lookup.jspf" %>
 			</c:otherwise>
 		</c:choose>
 	</div>

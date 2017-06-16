@@ -9,6 +9,9 @@ function lookupUpdate($tr) {
 		brand : {
 			id: $tr.attr('brand-id')
 		},
+		category: {
+			id: $tr.attr('category-id')
+		},
 		model : get('.model').html(),
 		price : get('.price').html()
 	}

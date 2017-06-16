@@ -1,20 +1,17 @@
-package by.tilalis.servlets.session;
+package by.tilalis.servlets.data.orders;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import by.tilalis.db.interfaces.OrderManager;
 
-import by.tilalis.db.interfaces.UserManager;
-
-public abstract class SessionServlet extends HttpServlet {
+public abstract class OrderManagerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
 	@EJB
-	protected UserManager userManager;
-	
+	protected OrderManager orderManager;
 	protected ObjectMapper mapper;
-    
+
 	@Override
 	public void init() {
 		this.mapper = new ObjectMapper();

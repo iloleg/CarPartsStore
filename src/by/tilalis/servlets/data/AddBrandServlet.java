@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import by.tilalis.db.DataRecord;
+import by.tilalis.db.records.BrandRecord;
 
 @WebServlet("/add_brand")
 public class AddBrandServlet extends DataManagerServlet {
@@ -27,7 +27,7 @@ public class AddBrandServlet extends DataManagerServlet {
 		final String insertedJson = request.getParameter("inserted");
 		
 		try {
-			final DataRecord.Brand inserted = mapper.readValue(insertedJson, DataRecord.Brand.class);
+			final BrandRecord inserted = mapper.readValue(insertedJson, BrandRecord.class);
 			dataManager.addBrand(inserted);
 			writer.write("{\"status\": \"success\"}");
 		} catch (JsonParseException | JsonMappingException | SQLException e) {

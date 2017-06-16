@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import javax.ejb.Local;
 
-import by.tilalis.db.UserRecord;
+import by.tilalis.db.records.UserRecord;
 
 @Local
 public interface UserManager {

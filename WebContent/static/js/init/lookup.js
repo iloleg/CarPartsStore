@@ -1,79 +1,48 @@
+$(document).ready(getLookupReady('get_page'));
 $(document).ready(function () {
-	var update = window.lookupUpdate;
-	var count = 0;
-	var countOnPage = 0;
-	
-	function get_page(lines, page) {
-		$.post('get_page', {"lines" : lines, "page" : page}, function (responce) {
-			var data = JSON.parse(responce);
-			var table = CPS.$Table(data, 
-					["Factory ID", "Brand", "Model", "Price"],
-					["factoryId", "brand.name", "model", "price"],
-					["object-id", "brand-id"],
-					["id", "brand.id"],
-					page*lines, update);
-			$('.cps-table').html('').append(table);
-		});
-	}
-	
-	function pagination(count) {
-		var ul = $("<ul></ul>");
-		for (var i = 0; i < count; ++i) {
-			ul.addClass("pagination").append(
-				$("<li></li>").append(
-					$("<a></a>").attr('href', '#').append(i + 1)
-				)
-			);
-		}
-		ul.find("a").click(function () {
-		    var page = parseInt($(this).html()) - 1;
-		    console.log(page);
-		    get_page(countOnPage, page);
-		    return false;
-		});
-		$("#pagination-outer").html("").append(ul);
-	}
-	
-	function rpp(count) {
-		$("#rpp").html('');
-		for (var i = count; i > 0; i -= 5) {
-			$("#rpp").append($("<option></option>").attr("value", i).append(i));
-		}
-	}
-
-	$.post('get_items_count', function (responce) {
-		countOnPage = count = parseInt(responce);
-		pagination(1);
-		rpp(count);
-		get_page(count, 0);
-	});
-	
-	$("#rpp").click(function () {
-		countOnPage = $(this).val();
-		pageCount = count / countOnPage;
-		pagination(pageCount);
-		get_page(countOnPage, 0);
-	});
-	
-	$("#btn-delete").click(function () {
-		var deleted = {
-			"id": $("#chosen-record").attr('object-id')
+	$("#btn-order").click(function () {
+		var $chosen = $("#chosen-record");
+		var inserted = {
+			"data": {
+				"id": $chosen.attr('object-id'),
+				"factoryId": $chosen.find('.factoryId').html(),
+				"brand" : {
+					"id": $chosen.attr('brand-id'),
+					"name": $chosen.find('.brand-name').html()
+				},
+				"category": {
+					"id": $chosen.attr('category-id'),
+					"name": $chosen.find('.category-name').html()
+				},
+				"model": $chosen.find('.model').html(),
+				"price": $chosen.find('.price').html()
+			} 
+		};		
+		var email = prompt("Enter your email:");
+		if (inserted.data.id === undefined ) {
+			alert("Choose a record!");
+			return;
 		}
 		
-		if (confirm("Are you sure?")) {
-			$.post('delete_record', {"deleted" : JSON.stringify(deleted)}, function (responce) {
-				var data = JSON.parse(responce);
-				if (data.status === "success") {
-					alert("Successfully deleted!");
-					count -= 1;
-					rpp(count);
-					pagination(1)
-					get_page(count, 0);
-				} else {
-					alert("Cannot delete this record.");
-				}
-			});	
+		if (email == "") {
+			return;
 		}
+		
+		if (email.indexOf("@") == -1) {
+			alert("Wrong email!");
+			return;
+		}
+		
+		$.post('add_order', {
+			"inserted": JSON.stringify(inserted),
+			"email": email
+		}, function (r) {
+			var result = JSON.parse(r);
+			if (result.status === "success") {
+				alert("Added! Check your e-mail `" + email + "` for further information!");
+			} else {
+				alert("Some error occured!");
+			}
+		});
 	});
-	
 });

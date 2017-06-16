@@ -1,4 +1,4 @@
-package by.tilalis.servlets.session;
+package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.DataRecord;
 
-@WebServlet("/delete_user")
-public class DeleteUserServlet extends SessionServlet {
+@WebServlet("/untrash_record")
+public class UntrashRecordServlet extends DataManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -20,17 +20,16 @@ public class DeleteUserServlet extends SessionServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		final String id = request.getParameter("id");
 		final PrintWriter writer = response.getWriter();
-		final UserRecord deleted = new UserRecord(Integer.valueOf(id));
+		final String untrashedJson = request.getParameter("untrashed");
 		
 		try {
-			userManager.deleteUserById(deleted);
+			final DataRecord untrashed = mapper.readValue(untrashedJson, DataRecord.class);
+			dataManager.untrashRecord(untrashed);
 			writer.write("{\"status\": \"success\"}");
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (NumberFormatException | SQLException e) {
 			writer.write("{\"status\": \"fail\"}");
+			e.printStackTrace();
 		}
 	}
-
 }

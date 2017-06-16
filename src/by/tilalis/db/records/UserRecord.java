@@ -1,4 +1,4 @@
-package by.tilalis.db;
+package by.tilalis.db.records;
 
 import by.tilalis.db.interfaces.Record;
 import by.tilalis.utils.SHA256;
@@ -28,8 +28,12 @@ public class UserRecord implements Record {
 		this(id, username, "", role);
 	}
 	
+	public UserRecord(final int id, final String username) {
+		this(id, username, "");
+	}
+	
 	public UserRecord(final String username) {
-		this(-1, username, "");
+		this(-1, username);
 	}
 	
 	public UserRecord(final String username, final String password) {
