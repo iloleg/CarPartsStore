@@ -2,9 +2,8 @@ package by.tilalis.servlets.data.orders;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.util.List;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import by.tilalis.db.interfaces.BasketManager;
 import by.tilalis.db.records.OrderRecord;
 
-@WebServlet("/delete_order")
-@EJB(name="OrderManagerBean", beanInterface = BasketManager.class)
-public class DeleteOrderServlet extends OrderManagerServlet {
+@WebServlet("/get_basket")
+public class GetBasketServlet extends OrderManagerServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -23,18 +21,11 @@ public class DeleteOrderServlet extends OrderManagerServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//final BasketManager orderManager = (BasketManager) getOrderManager(request.getSession());
+		final BasketManager basketManager = (BasketManager) getBasketManager(request.getSession());
 		
 		final PrintWriter writer = response.getWriter();
-		final String deletedJson = request.getParameter("deleted");
 		
-		try {
-			final OrderRecord deleted = mapper.readValue(deletedJson, OrderRecord.class);
-			orderManager.deleteOrder(deleted);
-			writer.write("{\"status\": \"success\"}");
-		} catch (NumberFormatException | SQLException e) {
-			writer.write("{\"status\": \"fail\"}");
-			e.printStackTrace();
-		}
+		final List<OrderRecord> dataRecords = basketManager.getBusket();
+		mapper.writeValue(writer, dataRecords);
 	}
 }

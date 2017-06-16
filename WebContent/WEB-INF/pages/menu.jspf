@@ -29,6 +29,8 @@
 						View</a></li>
 				<li><a href="${path}/search"><i class="fa fa-search fa-fw"></i>
 						Search</a></li>
+				<li><a href="${path}/basket"><i class="fa fa-shopping-basket fa-fw"></i>
+						Basket</a></li>		
 				<c:if test="${user.role == 'Administrator'}">
 					<li><a href="${path}/orders"><i class="fa fa-shopping-cart fa-fw"></i>
 							Orders</a></li>

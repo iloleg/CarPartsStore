@@ -11,7 +11,7 @@ import by.tilalis.db.records.OrderRecord;
 public interface OrderManager {
 	List<OrderRecord> getOrders(int linesPerPage, int numberOfPage);
 	
-	void addOrder(OrderRecord inserted) throws SQLException;
-	
 	void deleteOrder(OrderRecord deleted) throws SQLException;
+	
+	void sendOrders(List<OrderRecord> basket) throws SQLException;
 }

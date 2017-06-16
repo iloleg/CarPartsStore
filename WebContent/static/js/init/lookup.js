@@ -18,28 +18,18 @@ $(document).ready(function () {
 				"price": $chosen.find('.price').html()
 			} 
 		};		
-		var email = prompt("Enter your email:");
+		
 		if (inserted.data.id === undefined ) {
 			alert("Choose a record!");
 			return;
 		}
 		
-		if (email == "") {
-			return;
-		}
-		
-		if (email.indexOf("@") == -1) {
-			alert("Wrong email!");
-			return;
-		}
-		
-		$.post('add_order', {
-			"inserted": JSON.stringify(inserted),
-			"email": email
+		$.post('add_to_basket', {
+			"inserted": JSON.stringify(inserted)
 		}, function (r) {
 			var result = JSON.parse(r);
 			if (result.status === "success") {
-				alert("Added! Check your e-mail `" + email + "` for further information!");
+				alert("Added!");
 			} else {
 				alert("Some error occured!");
 			}

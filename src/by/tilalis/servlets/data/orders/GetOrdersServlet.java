@@ -20,6 +20,8 @@ public class GetOrdersServlet extends OrderManagerServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//final BasketManager orderManager = (BasketManager) getBasketManager(request.getSession());
+		
 		final PrintWriter writer = response.getWriter();
 		int linesPerPage = -1;
 		int numberOfPage = 0;

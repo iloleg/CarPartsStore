@@ -17,10 +17,6 @@ import by.tilalis.db.records.UserRecord;
 
 @Stateless
 public class PGOrderManager extends PGManager implements OrderManager {
-	public PGOrderManager() {
-		super();
-	}
-
 	private String getQuery(String path) {
 		final String base = "//Queries/OrderManager/";
 		try {
@@ -29,6 +25,22 @@ public class PGOrderManager extends PGManager implements OrderManager {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@Override
+	public void sendOrders(List<OrderRecord> basket) throws SQLException  {
+		final String query = getQuery("Insert");
+		for (final OrderRecord record : basket) {
+			final UserRecord user = record.getUser();
+			final DataRecord data = record.getData();
+			try {
+				statement.executeQuery(
+						MessageFormat.format(query, user.getId(), data.getId())
+				);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -65,17 +77,12 @@ public class PGOrderManager extends PGManager implements OrderManager {
 	}
 
 	@Override
-	public void addOrder(OrderRecord inserted) throws SQLException {
-		final UserRecord user = inserted.getUser();
-		final DataRecord data = inserted.getData();
-		final String query = MessageFormat.format(getQuery("Insert"), user.getId(), data.getId());
-		statement.executeUpdate(query);
-	}
-
-	@Override
-	public void deleteOrder(OrderRecord deleted) throws SQLException {
+	public void deleteOrder(OrderRecord deleted) {
 		final String query = MessageFormat.format(getQuery("Delete"), deleted.getId());
-		statement.executeUpdate(query);
+		try {
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-
 }

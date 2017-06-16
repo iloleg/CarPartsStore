@@ -13,6 +13,12 @@
 		<script src="static/js/init/orders.js"></script>
 		<c:set var="pageHeader" scope="session" value="Orders"/>
 		<c:set var="deleteButton" scope="session" value="Delete"/>
+		<c:set var="orderButton" scope="session" value="Basket"/>
+	</c:when>
+	<c:when test="${content == '/basket'}">
+		<script src="static/js/init/basket.js"></script>
+		<c:set var="pageHeader" scope="session" value="Busket"/>
+		<c:set var="orderButton" scope="session" value="Order"/>
 	</c:when>
 	<c:otherwise>
 		<script src="static/js/init/lookup.js"></script>
@@ -58,12 +64,12 @@
 								<button id="btn-untrash" class="btn btn-primary">Untrash</button>
 							</div>
 						</c:if>
-						<c:if test="${content == '/lookup' or content == '/' }">
+						<c:if test="${content == '/lookup' or content == '/' or content == '/basket'}">
 							<div class="col-lg-1">
-								<button id="btn-order" class="btn btn-primary">Order</button>
+								<button id="btn-order" class="btn btn-primary">${orderButton}</button>
 							</div>
 						</c:if>
-						<c:if test="${user.role == 'Administrator'}">
+						<c:if test="${user.role == 'Administrator' or content == '/basket'}">
 							<div class="col-lg-2">
 								<button id="btn-delete" class="btn btn-danger">${deleteButton}</button>
 							</div>

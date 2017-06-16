@@ -44,4 +44,13 @@ public class OrderRecord implements Record {
 	public void setData(DataRecord data) {
 		this.data = data;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || other.getClass() != this.getClass()) {
+			return false;
+		}
+		final OrderRecord record = (OrderRecord) other;
+		return record.id == this.id;
+	}
 }
