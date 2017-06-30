@@ -3,5 +3,5 @@
 	<Resource name="jdbc/cps" auth="Container" type="javax.sql.DataSource"
 		maxTotal="100" maxIdle="30" username="postgres"
 		password="290197" driverClassName="org.postgresql.Driver"
-		url="jdbc:postgresql://localhost:5432/CPS" />
+		url="jdbc:postgresql://46.105.55.153:51330/CPS" />
 </Context>

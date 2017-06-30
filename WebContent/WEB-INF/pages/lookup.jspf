@@ -24,6 +24,7 @@
 		<script src="static/js/init/lookup.js"></script>
 		<c:set var="pageHeader" scope="session" value="Catalogue"/>
 		<c:set var="deleteButton" scope="session" value="Move to Trash"/>
+		<c:set var="orderButton" scope="session" value="Order"/>
 	</c:otherwise>
 </c:choose>
 
