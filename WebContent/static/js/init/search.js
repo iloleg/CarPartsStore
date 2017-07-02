@@ -4,18 +4,18 @@ $(document).ready(function () {
 	var countOnPage = 0;
 	var finalCount = 0;
 	
-	function get_page(lines, page, search_field, search_query) {
+	function get_page(lines, page, search_field, search_query, callback) {
 		$.post('get_page', {"lines" : lines, "page" : page, "search_field": search_field, "search_query" : search_query}, function (responce) {
 			var data = JSON.parse(responce);
-			count = 0;
-			for (item in data) {
-				++count;
-			}
+			countOnPage = count = data.length;
 			var table = CPS.$Table(data, [ "Factory ID", "Brand", "Category", "Model",
 				"Price" ], [ "factoryId", "brand.name", "category.name", "model",
 				"price" ], [ "object-id", "brand-id", "category-id"], [ "id",
 				"brand.id", "category.id"], page * lines, update);
 			$('.cps-table').html('').append(table);
+			if (callback !== undefined) {
+				callback();
+			}
 		});
 	}
 	
@@ -42,15 +42,14 @@ $(document).ready(function () {
 	function rpp(count) {
 		$("#rpp").html('');
 		for (var i = count; i > 0; i -= 5) {
-			$("#rpp").append($("<option></option>").attr("value", i).append(i));
+			$("#rpp").append(
+					$("<option></option>").attr("value", i).append(i));
 		}
 	}
-
-	$.post('get_items_count', function (responce) {
-		finalCount = countOnPage = count = parseInt(responce);
-		pagination(1);
+	
+	get_page(-1, 0, "", "", function () {
 		rpp(count);
-		get_page(count, 0);
+		pagination(1);
 	});
 	
 	$("#rpp").click(function () {
@@ -63,10 +62,11 @@ $(document).ready(function () {
 	});
 	
 	$("#btn-delete").click(function () {
-		var id = $("#chosen-record").attr('object-id');
-		console.log(id);
+		var deleted = {
+				"id": $("#chosen-record").attr('object-id')
+		}
 		if (confirm("Are you sure?")) {
-			$.post('delete_record', {"id" : id}, function (responce) {
+			$.post('delete_record', {"deleted" : JSON.stringify(deleted)}, function (responce) {
 				var data = JSON.parse(responce);
 				if (data.status === "success") {
 					alert("Successfully deleted!");
@@ -112,28 +112,18 @@ $(document).ready(function () {
 				"price": $chosen.find('.price').html()
 			} 
 		};		
-		var email = prompt("Enter your email:");
+		
 		if (inserted.data.id === undefined ) {
 			alert("Choose a record!");
 			return;
 		}
 		
-		if (email == "") {
-			return;
-		}
-		
-		if (email.indexOf("@") == -1) {
-			alert("Wrong email!");
-			return;
-		}
-		
-		$.post('add_order', {
-			"inserted": JSON.stringify(inserted),
-			"email": email
+		$.post('add_to_basket', {
+			"inserted": JSON.stringify(inserted)
 		}, function (r) {
 			var result = JSON.parse(r);
 			if (result.status === "success") {
-				alert("Added! Check your e-mail `" + email + "` for further information!");
+				alert("Added!");
 			} else {
 				alert("Some error occured!");
 			}

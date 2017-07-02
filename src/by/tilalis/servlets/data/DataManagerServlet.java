@@ -11,6 +11,7 @@ public abstract class DataManagerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@EJB
 	protected CarPartManager dataManager;
+	
 	protected ObjectMapper mapper;
 
 	@Override

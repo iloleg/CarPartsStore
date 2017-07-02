@@ -21,6 +21,7 @@ public class DeleteRecordServlet extends DataManagerServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
 		final String deletedJson = request.getParameter("deleted");
+		System.out.println(deletedJson);
 		
 		try {
 			final CarPart deleted = mapper.readValue(deletedJson, CarPart.class);

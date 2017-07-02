@@ -6,12 +6,12 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>CPS</jta-data-source>
 		<non-jta-data-source>CPSUnmanaged</non-jta-data-source>
-		<class>by.tilalis.db.records.User</class>
-		<class>by.tilalis.db.records.Role</class>
-		<class>by.tilalis.db.records.CarPart</class>
-		<class>by.tilalis.db.records.Category</class>
-		<class>by.tilalis.db.records.Brand</class>
-		<class>by.tilalis.db.records.Order</class>
+		<class>by.tilalis.db.entities.User</class>
+		<class>by.tilalis.db.entities.Role</class>
+		<class>by.tilalis.db.entities.CarPart</class>
+		<class>by.tilalis.db.entities.Category</class>
+		<class>by.tilalis.db.entities.Brand</class>
+		<class>by.tilalis.db.entities.Order</class>
 		<properties>
 			<property name="eclipselink.allow-zero-id" value="true" />
 			<!-- <property name="eclipselink.ddl-generation" value="create-tables" 
