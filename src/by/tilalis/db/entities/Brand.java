@@ -1,4 +1,4 @@
-package by.tilalis.db.records;
+package by.tilalis.db.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,15 +8,15 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "categories")
-@NamedQuery(name = "Category.getAll", query = "SELECT category FROM Category category")
-public class Category {
+@Table(name = "brands")
+@NamedQuery(name = "Brand.getAll", query = "SELECT brand FROM Brand brand")
+public class Brand {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String name;
 	
-	public Category() {
+	public Brand() {
 		super();
 	}
 	
@@ -24,7 +24,7 @@ public class Category {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 	
@@ -32,8 +32,7 @@ public class Category {
 		return name;
 	}
 	
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
-	
 }

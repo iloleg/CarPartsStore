@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import by.tilalis.db.records.Brand;
-import by.tilalis.db.records.CarPart;
-import by.tilalis.db.records.Category;
-import by.tilalis.db.records.User;
+import by.tilalis.db.entities.Brand;
+import by.tilalis.db.entities.CarPart;
+import by.tilalis.db.entities.Category;
+import by.tilalis.db.entities.User;
 
 @Local
 public interface CarPartManager {

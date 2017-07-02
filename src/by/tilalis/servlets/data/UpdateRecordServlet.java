@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.CarPart;
+import by.tilalis.db.entities.CarPart;
 
 @WebServlet("/update_record")
 public class UpdateRecordServlet extends DataManagerServlet {

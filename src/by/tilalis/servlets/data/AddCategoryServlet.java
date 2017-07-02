@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.Category;
+import by.tilalis.db.entities.Category;
 
 @WebServlet("/add_category")
 public class AddCategoryServlet extends DataManagerServlet {

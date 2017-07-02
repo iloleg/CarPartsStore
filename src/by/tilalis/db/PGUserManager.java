@@ -3,9 +3,9 @@ package by.tilalis.db;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
+import by.tilalis.db.entities.Role;
+import by.tilalis.db.entities.User;
 import by.tilalis.db.interfaces.UserManager;
-import by.tilalis.db.records.Role;
-import by.tilalis.db.records.User;
 
 @Stateless
 public class PGUserManager extends PGManager implements UserManager {	

@@ -5,8 +5,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
+import by.tilalis.db.entities.Order;
 import by.tilalis.db.interfaces.OrderManager;
-import by.tilalis.db.records.Order;
 
 @Stateless
 public class PGOrderManager extends PGManager implements OrderManager {	

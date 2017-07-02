@@ -1,4 +1,4 @@
-package by.tilalis.db.records;
+package by.tilalis.db.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -10,11 +10,11 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Predicate;
 
+import by.tilalis.db.entities.Brand;
+import by.tilalis.db.entities.CarPart;
+import by.tilalis.db.entities.Category;
+import by.tilalis.db.entities.User;
 import by.tilalis.db.interfaces.CarPartManager;
-import by.tilalis.db.records.Brand;
-import by.tilalis.db.records.CarPart;
-import by.tilalis.db.records.Category;
-import by.tilalis.db.records.User;
 
 @Stateless
 public class PGCarPartManager extends PGManager implements CarPartManager {
@@ -38,9 +38,9 @@ public class PGCarPartManager extends PGManager implements CarPartManager {
 				query.setFirstResult(offset).setMaxResults(linesPerPage);
 			}
 		} else {
-			final CriteriaBuilder cb = em.getCriteriaBuilder();
-			final CriteriaQuery<CarPart> cq = cb.createQuery(CarPart.class);
-			final Root<CarPart> root = cq.from(CarPart.class);
+			final CriteriaBuilder builder = em.getCriteriaBuilder();
+			final CriteriaQuery<CarPart> criteriaQuery = builder.createQuery(CarPart.class);
+			final Root<CarPart> root = criteriaQuery.from(CarPart.class);
 			final String[] parts = searchField.split("\\.");
 			
 			Path<Object> path = root.get(parts[0]);
@@ -50,30 +50,20 @@ public class PGCarPartManager extends PGManager implements CarPartManager {
 			
 			final Predicate where;
 			if ("price".equals(searchField) || "factoryId".equals(searchField)) {
-				where = cb.equal(path, searchQuery);
+				where = builder.equal(path, searchQuery);
 			} else {
-				where = cb.like(path.as(String.class), "%" + searchQuery + "%");
+				where = builder.like(path.as(String.class), "%" + searchQuery + "%");
 			}
 			
-			cq.select(root)
+			criteriaQuery.select(root)
 			.where(where);
 	
-			query = em.createQuery(cq);
+			query = em.createQuery(criteriaQuery);
 			if (linesPerPage > 0) {
 				query.setFirstResult(offset).setMaxResults(linesPerPage);
 			}
 		}
 		
-		/*
-		if (searchField == null || searchQuery == null || "".equals(searchField) || "".equals(searchQuery)) {
-			query = em.createNamedQuery("CarPart.getParts", CarPart.class);
-			if (linesPerPage > 0) {
-				query.setFirstResult(offset).setMaxResults(linesPerPage);
-			}
-		} else {
-			query = em.createNamedQuery("CarPart.search", CarPart.class);
-			query.setParameter("model", searchQuery).setFirstResult(offset).setMaxResults(linesPerPage);
-		}*/
 		return query.getResultList();
 	}
 

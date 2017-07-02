@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.Brand;
+import by.tilalis.db.entities.Brand;
 
 @WebServlet("/get_brands")
 public class GetBrandsServlet extends DataManagerServlet {

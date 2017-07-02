@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import by.tilalis.db.entities.Order;
+import by.tilalis.db.entities.User;
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.Order;
-import by.tilalis.db.records.User;
 
 @WebServlet("/add_to_basket")
 public class AddOrderServlet extends OrderManagerServlet {

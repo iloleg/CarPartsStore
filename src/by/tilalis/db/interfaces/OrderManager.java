@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import by.tilalis.db.records.Order;
+import by.tilalis.db.entities.Order;
 
 @Local
 public interface OrderManager {

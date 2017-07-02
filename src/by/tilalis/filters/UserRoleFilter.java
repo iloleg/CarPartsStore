@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.tilalis.db.records.User;
+import by.tilalis.db.entities.User;
 
 @WebFilter("/*")
 public class UserRoleFilter implements Filter {

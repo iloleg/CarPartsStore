@@ -9,8 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import by.tilalis.db.entities.Order;
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.Order;
 
 @WebServlet("/get_basket")
 public class GetBasketServlet extends OrderManagerServlet {

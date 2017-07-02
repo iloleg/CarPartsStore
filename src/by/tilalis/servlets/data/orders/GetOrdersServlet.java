@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.Order;
+import by.tilalis.db.entities.Order;
 
 @WebServlet("/get_orders")
 public class GetOrdersServlet extends OrderManagerServlet {

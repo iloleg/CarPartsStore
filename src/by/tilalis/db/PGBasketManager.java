@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 
+import by.tilalis.db.entities.Order;
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.Order;
 
 @Stateful(name="BasketManagerBean")
 public class PGBasketManager implements BasketManager {

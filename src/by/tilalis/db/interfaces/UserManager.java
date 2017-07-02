@@ -2,7 +2,7 @@ package by.tilalis.db.interfaces;
 
 import javax.ejb.Local;
 
-import by.tilalis.db.records.User;
+import by.tilalis.db.entities.User;
 
 @Local
 public interface UserManager {

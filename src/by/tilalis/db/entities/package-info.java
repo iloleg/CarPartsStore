@@ -5,4 +5,4 @@
  * @author Tilalis
  *
  */
-package by.tilalis.db.records;
+package by.tilalis.db.entities;
