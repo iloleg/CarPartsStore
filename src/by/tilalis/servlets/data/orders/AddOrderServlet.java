@@ -12,8 +12,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.OrderRecord;
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.Order;
+import by.tilalis.db.records.User;
 
 @WebServlet("/add_to_basket")
 public class AddOrderServlet extends OrderManagerServlet {
@@ -32,8 +32,8 @@ public class AddOrderServlet extends OrderManagerServlet {
 		final String insertedJson = request.getParameter("inserted");
 
 		try {
-			final OrderRecord inserted = mapper.readValue(insertedJson, OrderRecord.class);
-			final UserRecord user = (UserRecord) request.getSession().getAttribute("user");
+			final Order inserted = mapper.readValue(insertedJson, Order.class);
+			final User user = (User) request.getSession().getAttribute("user");
 			inserted.setUser(user);
 			basketManager.addOrderToBusket(inserted);
 			writer.write("{\"status\": \"success\"}");

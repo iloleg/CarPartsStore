@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.Order;
 
 @WebServlet("/get_orders")
 public class GetOrdersServlet extends OrderManagerServlet {
@@ -31,7 +31,7 @@ public class GetOrdersServlet extends OrderManagerServlet {
 		} catch (NumberFormatException nfe) {
 		}
 		
-		final List<OrderRecord> dataRecords = orderManager.getOrders(linesPerPage, numberOfPage);
+		final List<Order> dataRecords = orderManager.getOrders(linesPerPage, numberOfPage);
 		mapper.writeValue(writer, dataRecords);
 	}
 }

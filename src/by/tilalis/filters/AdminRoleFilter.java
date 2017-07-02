@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.User;
 
 @WebFilter({
 	"/add_record", 
@@ -36,9 +36,9 @@ public class AdminRoleFilter implements Filter {
 		final HttpServletRequest req = (HttpServletRequest) request;
 		final HttpServletResponse resp = (HttpServletResponse) response;
 		final HttpSession session = req.getSession();
-		final UserRecord user = (UserRecord) session.getAttribute("user");
+		final User user = (User) session.getAttribute("user");
 		
-		if (user != null && user.getRole().equals("Administrator")) {
+		if (user != null && user.getRole().getName().equals("Administrator")) {
 			chain.doFilter(request, response);
 		} else {
 			resp.sendRedirect(req.getContextPath() + "/signin");

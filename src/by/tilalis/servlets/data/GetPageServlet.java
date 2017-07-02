@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.DataRecord;
+import by.tilalis.db.records.CarPart;
 
 @WebServlet("/get_page")
 public class GetPageServlet extends DataManagerServlet {
@@ -32,7 +32,7 @@ public class GetPageServlet extends DataManagerServlet {
 		} catch (NumberFormatException nfe) {
 		}
 		
-		final List<DataRecord> dataRecords = dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery);
-		mapper.writeValue(writer, dataRecords);
+		final List<CarPart> CarParts = dataManager.getPage(linesPerPage, numberOfPage, searchField, searchQuery);
+		mapper.writeValue(writer, CarParts);
 	}
 }

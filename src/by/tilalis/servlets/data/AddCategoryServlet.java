@@ -2,17 +2,12 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import by.tilalis.db.records.CategoryRecord;
+import by.tilalis.db.records.Category;
 
 @WebServlet("/add_category")
 public class AddCategoryServlet extends DataManagerServlet {
@@ -27,10 +22,10 @@ public class AddCategoryServlet extends DataManagerServlet {
 		final String insertedJson = request.getParameter("inserted");
 		
 		try {
-			final CategoryRecord inserted = mapper.readValue(insertedJson, CategoryRecord.class);
+			final Category inserted = mapper.readValue(insertedJson, Category.class);
 			dataManager.addCategory(inserted);
 			writer.write("{\"status\": \"success\"}");
-		} catch (JsonParseException | JsonMappingException | SQLException e) {
+		} catch (Exception e) {
 			writer.write("{\"status\": \"fail\"}");
 			e.printStackTrace();
 		}

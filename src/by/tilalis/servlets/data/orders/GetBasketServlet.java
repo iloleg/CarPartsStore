@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.Order;
 
 @WebServlet("/get_basket")
 public class GetBasketServlet extends OrderManagerServlet {
@@ -25,7 +25,7 @@ public class GetBasketServlet extends OrderManagerServlet {
 		
 		final PrintWriter writer = response.getWriter();
 		
-		final List<OrderRecord> dataRecords = basketManager.getBusket();
+		final List<Order> dataRecords = basketManager.getBusket();
 		mapper.writeValue(writer, dataRecords);
 	}
 }

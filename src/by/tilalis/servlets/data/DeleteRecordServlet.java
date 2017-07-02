@@ -2,14 +2,13 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.DataRecord;
+import by.tilalis.db.records.CarPart;
 
 @WebServlet("/delete_record")
 public class DeleteRecordServlet extends DataManagerServlet {
@@ -24,10 +23,10 @@ public class DeleteRecordServlet extends DataManagerServlet {
 		final String deletedJson = request.getParameter("deleted");
 		
 		try {
-			final DataRecord deleted = mapper.readValue(deletedJson, DataRecord.class);
+			final CarPart deleted = mapper.readValue(deletedJson, CarPart.class);
 			dataManager.deleteRecord(deleted);
 			writer.write("{\"status\": \"success\"}");
-		} catch (NumberFormatException | SQLException e) {
+		} catch (Exception e) {
 			writer.write("{\"status\": \"fail\"}");
 			e.printStackTrace();
 		}

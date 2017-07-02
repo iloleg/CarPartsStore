@@ -2,17 +2,13 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import by.tilalis.db.records.BrandRecord;
+import by.tilalis.db.records.Brand;
 
 @WebServlet("/add_brand")
 public class AddBrandServlet extends DataManagerServlet {
@@ -27,10 +23,10 @@ public class AddBrandServlet extends DataManagerServlet {
 		final String insertedJson = request.getParameter("inserted");
 		
 		try {
-			final BrandRecord inserted = mapper.readValue(insertedJson, BrandRecord.class);
+			final Brand inserted = mapper.readValue(insertedJson, Brand.class);
 			dataManager.addBrand(inserted);
 			writer.write("{\"status\": \"success\"}");
-		} catch (JsonParseException | JsonMappingException | SQLException e) {
+		} catch (Exception e) {
 			writer.write("{\"status\": \"fail\"}");
 			e.printStackTrace();
 		}

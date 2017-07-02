@@ -2,14 +2,12 @@ package by.tilalis.servlets.data.orders;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
@@ -20,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.DataRecord;
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.CarPart;
+import by.tilalis.db.records.Order;
 
 @WebServlet("/send_order")
 public class SendOrderServlet extends OrderManagerServlet {
@@ -46,7 +44,7 @@ public class SendOrderServlet extends OrderManagerServlet {
 		final String email = request.getParameter("email");
 
 		try {
-			List<OrderRecord> busket = basketManager.getBusket();
+			List<Order> busket = basketManager.getBusket();
 			orderManager.sendOrders(busket);
 
 			final Connection connection = connectionFactory.createConnection();
@@ -61,9 +59,9 @@ public class SendOrderServlet extends OrderManagerServlet {
 			}
 
 			final StringBuilder messageText = new StringBuilder("Hello! Here are your order details:\n");
-			for (final OrderRecord record : busket) {
+			for (final Order record : busket) {
 				System.out.println(record.getId());
-				final DataRecord data = record.getData();
+				final CarPart data = record.getData();
 				messageText.append(MessageFormat.format(
 						"\n---\nFactory Id: {0}\n" + "Brand: {1}\n"
 								+ "Category: {2}\n" + "Model: {3}\n" + "Price: {4}",
@@ -75,7 +73,7 @@ public class SendOrderServlet extends OrderManagerServlet {
 			producer.send(jmsSession.createTextMessage(messageText.toString()));
 			basketManager.clear();
 			writer.write("{\"status\": \"success\"}");
-		} catch (JMSException | SQLException e) {
+		} catch (Exception e) {
 			writer.write("{\"status\": \"fail\"}");
 			e.printStackTrace();
 		}

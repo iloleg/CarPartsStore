@@ -6,7 +6,7 @@ $(document).ready(
                 var data = JSON.parse(responce);
                 $(".table-responsive").html('').append(
                     CPS.$Table(data, ["Username", "Role"], [
-                        "username", "role"
+                        "username", "role.name"
                     ], ["object-id"], ["id"]));
             });
         }

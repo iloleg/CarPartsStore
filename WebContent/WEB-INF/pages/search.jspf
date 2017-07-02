@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:if test="${role == 'Administrator'}">
+<c:if test="${user.role.name == 'Administrator'}">
 	<script src="static/js/init/lookup_update.js"></script>
 </c:if>
 <script src="static/js/init/search.js"></script>
@@ -25,9 +25,9 @@
 								<div class="form-group col-lg-4">
 									<label>Search By</label> <select id="search-field"
 										class="form-control">
-										<option value="factory_id">Factory Id</option>
-										<option value="brands.name">Brand</option>
-										<option value="categories.name">Category</option>
+										<option value="factoryId">Factory Id</option>
+										<option value="brand.name">Brand</option>
+										<option value="category.name">Category</option>
 										<option value="model">Model</option>
 										<option value="price">Price</option>
 									</select>
@@ -74,7 +74,7 @@
 						<div class="col-lg-1">
 							<button id="btn-order" class="btn btn-primary">Order</button>
 						</div>
-						<c:if test="${user.role == 'Administrator'}">
+						<c:if test="${user.role.name == 'Administrator'}">
 							<div class="col-lg-2">
 								<button id="btn-delete" class="btn btn-danger">Delete
 									Chosen Record</button>

@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.CategoryRecord;
+import by.tilalis.db.records.Category;
 
 @WebServlet("/get_categories")
 public class GetCategoriesServlet extends DataManagerServlet {
@@ -21,7 +21,7 @@ public class GetCategoriesServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		final List<CategoryRecord> dataRecords = dataManager.getCategories();
+		final List<Category> dataRecords = dataManager.getCategories();
 		mapper.writeValue(writer, dataRecords);
 	}
 }

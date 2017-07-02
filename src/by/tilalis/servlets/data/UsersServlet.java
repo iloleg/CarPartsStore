@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.User;
 
 @WebServlet("/get_users")
 public class UsersServlet extends DataManagerServlet {
@@ -21,7 +21,7 @@ public class UsersServlet extends DataManagerServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter writer = response.getWriter();
-		final List<UserRecord> usersTable = dataManager.getUsersTable();
+		final List<User> usersTable = dataManager.getUsersTable();
 		mapper.writeValue(writer, usersTable);
 	}
 }

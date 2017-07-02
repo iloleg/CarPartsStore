@@ -5,12 +5,12 @@ import javax.servlet.http.HttpServlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import by.tilalis.db.interfaces.DataManager;
+import by.tilalis.db.interfaces.CarPartManager;
 
 public abstract class DataManagerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@EJB
-	protected DataManager dataManager;
+	protected CarPartManager dataManager;
 	protected ObjectMapper mapper;
 
 	@Override

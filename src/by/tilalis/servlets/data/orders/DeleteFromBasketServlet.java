@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.Order;
 
 @WebServlet("/delete_from_basket")
 @EJB(name="OrderManagerBean", beanInterface = BasketManager.class)
@@ -28,7 +28,7 @@ public class DeleteFromBasketServlet extends OrderManagerServlet {
 		final String deletedJson = request.getParameter("deleted");
 		
 		try {
-			final OrderRecord deleted = mapper.readValue(deletedJson, OrderRecord.class);
+			final Order deleted = mapper.readValue(deletedJson, Order.class);
 			basketManager.deleteOrderFromBusket(deleted);
 			writer.write("{\"status\": \"success\"}");
 		} catch (NumberFormatException e) {

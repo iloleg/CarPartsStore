@@ -6,28 +6,28 @@ import java.util.List;
 import javax.ejb.Stateful;
 
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.Order;
 
 @Stateful(name="BasketManagerBean")
 public class PGBasketManager implements BasketManager {
-	private List<OrderRecord> busket;
+	private List<Order> busket;
 	
 	public PGBasketManager() {
 		this.busket = new LinkedList<>();
 	}
 
 	@Override
-	public List<OrderRecord> getBusket() {
+	public List<Order> getBusket() {
 		return busket;
 	}
 
 	@Override
-	public void addOrderToBusket(OrderRecord inserted) {
+	public void addOrderToBusket(Order inserted) {
 		busket.add(inserted);
 	}
 
 	@Override
-	public void deleteOrderFromBusket(OrderRecord deleted) {
+	public void deleteOrderFromBusket(Order deleted) {
 		busket.remove(deleted);
 	}
 	

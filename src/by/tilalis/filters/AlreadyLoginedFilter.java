@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.User;
 
 @WebFilter({"/signin", "/registration"})
 public class AlreadyLoginedFilter implements Filter {
@@ -20,7 +20,7 @@ public class AlreadyLoginedFilter implements Filter {
 		final HttpServletRequest req = (HttpServletRequest) request;
 		final HttpServletResponse resp = (HttpServletResponse) response;
 		final HttpSession session = req.getSession();
-		final UserRecord user = (UserRecord) session.getAttribute("user");
+		final User user = (User) session.getAttribute("user");
 		
 		if (user == null) {
 			chain.doFilter(request, response);

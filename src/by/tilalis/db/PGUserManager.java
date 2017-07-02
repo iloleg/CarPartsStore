@@ -1,66 +1,49 @@
 package by.tilalis.db;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-
 import javax.ejb.Stateless;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
+import javax.persistence.NoResultException;
 
 import by.tilalis.db.interfaces.UserManager;
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.Role;
+import by.tilalis.db.records.User;
 
 @Stateless
-public class PGUserManager extends PGManager implements UserManager {
+public class PGUserManager extends PGManager implements UserManager {	
+	private static final int USER_ROLE_ID = 2;
+	
 	public PGUserManager() {
 		super();
 	}
 
-	private String getQuery(final String path) {
-		final String base = "//Queries/UserManager/";
+	@Override
+	public User getUser(String username) {
+		User user = null;
+		
 		try {
-			return (String) xpath.compile(base + path).evaluate(document, XPathConstants.STRING);
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+			user = em.createNamedQuery("User.findByUsername", User.class)
+			.setParameter("username", username)
+			.getSingleResult();
+		} catch (NoResultException nre) {
 		}
-		return null;
+		
+		return user;
 	}
 
 	@Override
-	public void addUser(final UserRecord inserted) throws SQLException {
-		final String insertQuery = MessageFormat.format(
-				getQuery("Insert"), 
-				inserted.getUsername(), 
-				inserted.getHash(),
-				inserted.getRole());
-		statement.executeUpdate(insertQuery);
+	public void addUser(User inserted) {
+		inserted.setRole((Role) em.find(Role.class, USER_ROLE_ID));
+		em.persist(inserted);
 	}
 
 	@Override
-	public void deleteUser(final UserRecord deleted) throws SQLException {
-		statement.executeUpdate(MessageFormat.format(getQuery("DeleteByUsername"), deleted.getUsername()));
+	public void deleteUser(User deleted) {
+		em.remove(deleted);
 	}
 
 	@Override
-	public void deleteUserById(final UserRecord deleted) throws SQLException {
-		final int deletedCount = statement.executeUpdate(MessageFormat.format(getQuery("DeleteById"), Integer.toString(deleted.getId())));
-		if (deletedCount == 0) {
-			throw new SQLException();
-		}
+	public void deleteUserById(int id) {
+		final User user = em.find(User.class, id);
+		em.remove(user);
 	}
 
-	@Override
-	public UserRecord getUser(String username) {
-		final String query = MessageFormat.format(getQuery("GetUser"), username);
-		try (ResultSet rs = statement.executeQuery(query)) {
-			if (rs.next()) {
-				return new UserRecord(rs.getInt("id"), rs.getString("username"), rs.getString("hash"),
-						rs.getString("role"), false);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 }

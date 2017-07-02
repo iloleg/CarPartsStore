@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.DataRecord;
+import by.tilalis.db.records.CarPart;
 
 @WebServlet("/get_trash")
 public class GetTrashServlet extends DataManagerServlet {
@@ -29,7 +29,7 @@ public class GetTrashServlet extends DataManagerServlet {
 		} catch (NumberFormatException nfe) {
 		}
 		
-		final List<DataRecord> dataRecords = dataManager.getTrash(linesPerPage, numberOfPage);
-		mapper.writeValue(writer, dataRecords);
+		final List<CarPart> CarParts = dataManager.getTrash(linesPerPage, numberOfPage);
+		mapper.writeValue(writer, CarParts);
 	}
 }

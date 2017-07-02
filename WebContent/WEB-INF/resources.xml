@@ -1,0 +1,16 @@
+<resources>
+	<Resource id="CPS" type="DataSource">
+		JdbcDriver = org.postgresql.Driver
+		JdbcUrl = jdbc:postgresql://localhost:5432/CPS
+		UserName = postgres
+		Password = 290197
+	</Resource>
+	
+	<Resource id="CPSUnmanaged" type="DataSource">
+		JdbcDriver = org.postgresql.Driver
+		JdbcUrl = jdbc:postgresql://localhost:5432/CPS
+		UserName = postgres
+		Password = 290197
+		JtaManaged = false
+	</Resource>
+</resources>

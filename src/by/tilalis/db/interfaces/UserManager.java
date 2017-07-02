@@ -1,18 +1,16 @@
 package by.tilalis.db.interfaces;
 
-import java.sql.SQLException;
-
 import javax.ejb.Local;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.User;
 
 @Local
 public interface UserManager {
-	UserRecord getUser(String username);
+	User getUser(String username);
 
-	void addUser(UserRecord inserted) throws SQLException;
+	void addUser(User inserted);
 
-	void deleteUser(UserRecord deleted) throws SQLException;
+	void deleteUser(User deleted);
 
-	void deleteUserById(UserRecord deleted) throws SQLException;
+	void deleteUserById(int id);
 }

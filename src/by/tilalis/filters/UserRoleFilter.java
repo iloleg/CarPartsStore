@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.User;
 
 @WebFilter("/*")
 public class UserRoleFilter implements Filter {
@@ -28,7 +28,7 @@ public class UserRoleFilter implements Filter {
 		final String servletPath = req.getServletPath();
 		final String path = req.getRequestURI();
 		
-		final UserRecord user = (UserRecord) session.getAttribute("user");
+		final User user = (User) session.getAttribute("user");
 		final Stream<String> allowedPaths = Stream.of("/login", "/signin", "/register", "/registration");
 		
 		if (user != null || allowedPaths.anyMatch(servletPath::equals) || path.contains("static")) {

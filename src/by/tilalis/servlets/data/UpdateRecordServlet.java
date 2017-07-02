@@ -2,17 +2,13 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import by.tilalis.db.records.DataRecord;
+import by.tilalis.db.records.CarPart;
 
 @WebServlet("/update_record")
 public class UpdateRecordServlet extends DataManagerServlet {
@@ -31,10 +27,10 @@ public class UpdateRecordServlet extends DataManagerServlet {
 		final String[] values = request.getParameterValues("values[]");*/
 		final String updatedJson = request.getParameter("updated");
 		try {
-			final DataRecord updated = mapper.readValue(updatedJson, DataRecord.class);
+			final CarPart updated = mapper.readValue(updatedJson, CarPart.class);
 			dataManager.editRecord(updated);
 			writer.write(success);
-		} catch (JsonParseException | JsonMappingException | SQLException e) {
+		} catch (Exception e) {
 			writer.write(fail);
 			e.printStackTrace();
 		}

@@ -2,14 +2,13 @@ package by.tilalis.servlets.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import by.tilalis.db.records.DataRecord;
+import by.tilalis.db.records.CarPart;
 
 @WebServlet("/untrash_record")
 public class UntrashRecordServlet extends DataManagerServlet {
@@ -24,10 +23,10 @@ public class UntrashRecordServlet extends DataManagerServlet {
 		final String untrashedJson = request.getParameter("untrashed");
 		
 		try {
-			final DataRecord untrashed = mapper.readValue(untrashedJson, DataRecord.class);
+			final CarPart untrashed = mapper.readValue(untrashedJson, CarPart.class);
 			dataManager.untrashRecord(untrashed);
 			writer.write("{\"status\": \"success\"}");
-		} catch (NumberFormatException | SQLException e) {
+		} catch (Exception e) {
 			writer.write("{\"status\": \"fail\"}");
 			e.printStackTrace();
 		}

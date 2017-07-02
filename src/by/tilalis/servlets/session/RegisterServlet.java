@@ -1,7 +1,6 @@
 package by.tilalis.servlets.session;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.tilalis.db.records.UserRecord;
+import by.tilalis.db.records.User;
 
 @WebServlet("/register")
 public class RegisterServlet extends SessionServlet {
@@ -23,12 +22,15 @@ public class RegisterServlet extends SessionServlet {
 		final HttpSession session = request.getSession();
 		final String username = request.getParameter("username");
 		final String password = request.getParameter("password");
-		final UserRecord inserted = new UserRecord(username, password);
+		final User inserted = new User();
+		
+		inserted.setUsername(username);
+		inserted.setHash(password);
 		
 		try {
 			userManager.addUser(inserted);
 			session.setAttribute("registration", "success");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			session.setAttribute("registration", "fail");
 			e.printStackTrace();
 		}

@@ -1,17 +1,16 @@
 package by.tilalis.db.interfaces;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.ejb.Local;
 
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.Order;
 
 @Local
 public interface OrderManager {
-	List<OrderRecord> getOrders(int linesPerPage, int numberOfPage);
+	List<Order> getOrders(int linesPerPage, int numberOfPage);
 	
-	void deleteOrder(OrderRecord deleted) throws SQLException;
+	void deleteOrder(Order deleted);
 	
-	void sendOrders(List<OrderRecord> basket) throws SQLException;
+	void sendOrders(List<Order> basket);
 }

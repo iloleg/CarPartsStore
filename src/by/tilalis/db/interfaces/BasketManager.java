@@ -4,15 +4,15 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.Order;
 
 @Local
 public interface BasketManager {
-	List<OrderRecord> getBusket();
+	List<Order> getBusket();
 	
-	void addOrderToBusket(OrderRecord inserted);
+	void addOrderToBusket(Order inserted);
 	
-	void deleteOrderFromBusket(OrderRecord deleted);
+	void deleteOrderFromBusket(Order deleted);
 	
 	void clear();
 }

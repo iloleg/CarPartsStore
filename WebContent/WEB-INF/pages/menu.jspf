@@ -31,7 +31,7 @@
 						Search</a></li>
 				<li><a href="${path}/basket"><i class="fa fa-shopping-basket fa-fw"></i>
 						Basket</a></li>		
-				<c:if test="${user.role == 'Administrator'}">
+				<c:if test="${user.role.name == 'Administrator'}">
 					<li><a href="${path}/orders"><i class="fa fa-shopping-cart fa-fw"></i>
 							Orders</a></li>
 					<li><a href="${path}/add"><i

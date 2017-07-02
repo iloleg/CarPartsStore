@@ -2,7 +2,6 @@ package by.tilalis.servlets.data.orders;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -11,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import by.tilalis.db.interfaces.BasketManager;
-import by.tilalis.db.records.OrderRecord;
+import by.tilalis.db.records.Order;
 
 @WebServlet("/delete_order")
 @EJB(name="OrderManagerBean", beanInterface = BasketManager.class)
@@ -29,10 +28,10 @@ public class DeleteOrderServlet extends OrderManagerServlet {
 		final String deletedJson = request.getParameter("deleted");
 		
 		try {
-			final OrderRecord deleted = mapper.readValue(deletedJson, OrderRecord.class);
+			final Order deleted = mapper.readValue(deletedJson, Order.class);
 			orderManager.deleteOrder(deleted);
 			writer.write("{\"status\": \"success\"}");
-		} catch (NumberFormatException | SQLException e) {
+		} catch (Exception e) {
 			writer.write("{\"status\": \"fail\"}");
 			e.printStackTrace();
 		}
